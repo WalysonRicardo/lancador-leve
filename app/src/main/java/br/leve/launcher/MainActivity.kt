@@ -151,7 +151,7 @@ class MainActivity : Activity() {
 
     private fun buildTools() {
         val tools = listOf(
-            Tool("Entrada HDMI", "Troca para a fonte HDMI") { openVendor(Config.hdmiPackages, Settings.ACTION_SETTINGS) },
+            Tool("Entrada HDMI", "Troca para a fonte HDMI") { openHdmi() },
             Tool("Foco e trapézio", "Ajuste de imagem do projetor") { openVendor(Config.focusPackages, Settings.ACTION_DISPLAY_SETTINGS) },
             Tool("Pendrive / USB", "Vídeos e filmes do pendrive com legendas") { openVendor(Config.usbPackages, Settings.ACTION_INTERNAL_STORAGE_SETTINGS) },
             Tool("Wi-Fi", "Configurações de rede") { openSettings(Settings.ACTION_WIFI_SETTINGS) },
@@ -182,6 +182,18 @@ class MainActivity : Activity() {
     private fun open(pkg: String) {
         val i = AppRepo.launchIntent(packageManager, pkg) ?: return toast("Não foi possível abrir")
         try { startActivity(i) } catch (e: Exception) { toast("Não foi possível abrir") }
+    }
+
+    private fun openHdmi() {
+        try {
+            val i = Intent("android.media.tv.action.SETUP_INPUTS")
+                .putExtra("from_tv_source", true)
+                .putExtra("android.media.tv.extra.INPUT_ID", "com.droidlogic.tvinput/.services.Hdmi1InputService/HW5")
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(i)
+        } catch (e: Exception) {
+            openVendor(Config.hdmiPackages, Settings.ACTION_SETTINGS)
+        }
     }
 
     private fun openVendor(pkgs: List<String>, fallback: String) {
