@@ -9,3 +9,8 @@ otimizacao/pacotes-instalados.txt
 otimizacao/apks/*.apk
 *.jks
 *.keystore
+
+otimizacao/apks/*.apk
+otimizacao/apks/*.xapk
+otimizacao/apks/*.exe
+otimizacao/backup/
