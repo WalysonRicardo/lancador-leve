@@ -73,7 +73,19 @@ object Config {
      * firmware para firmware: rode `otimizacao/listar-pacotes` e preencha.
      * Lista vazia = abre as Configurações do Android.
      */
-    val hdmiPackages = listOf<String>()          // ex.: app "Fonte"/"Source" do fabricante
-    val focusPackages = listOf<String>()         // ex.: app de foco/trapézio do fabricante
-    val mirrorPackages = listOf("com.ecloud.eshare.server") // EShare costuma vir nesses projetores
+    val hdmiPackages = listOf(
+        "com.droidlogic.tv.settings/.TvSourceActivity",
+        "com.droidlogic.android.tv/com.android.tv.TvActivity",
+        "com.droidlogic.tv.settings",
+    )
+    val focusPackages = listOf(
+        "com.htc.htcsettings/com.htc.activity.ProjectionActivity",
+        "com.htc.htcsettings",
+        "com.softwinner.tcorrection/.projection.ProjectionSettingActivity",
+    )
+    val mirrorPackages = listOf(
+        "com.ionitech.airscreen",
+        "com.droidlogic.miracast",
+        "com.ecloud.eshare.server",
+    )
 }

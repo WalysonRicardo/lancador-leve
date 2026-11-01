@@ -28,10 +28,19 @@ object AppRepo {
         return out
     }
 
-    /** Prefere a tela de TV (leanback); cai para a de celular. */
-    fun launchIntent(pm: PackageManager, pkg: String): Intent? =
-        (pm.getLeanbackLaunchIntentForPackage(pkg) ?: pm.getLaunchIntentForPackage(pkg))
+    /** Prefere a tela de TV (leanback), componente explícito (pkg/cls) ou cai para a de celular. */
+    fun launchIntent(pm: PackageManager, pkg: String): Intent? {
+        if ('/' in pkg) {
+            val cn = ComponentName.unflattenFromString(pkg) ?: return null
+            val i = Intent().setComponent(cn)
+            if (pm.resolveActivity(i, 0) != null) {
+                return i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+            }
+            return null
+        }
+        return (pm.getLeanbackLaunchIntentForPackage(pkg) ?: pm.getLaunchIntentForPackage(pkg))
             ?.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED)
+    }
 
     fun firstInstalled(pm: PackageManager, pkgs: List<String>): String? =
         pkgs.firstOrNull { launchIntent(pm, it) != null }
