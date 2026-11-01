@@ -7,3 +7,5 @@ local.properties
 otimizacao/backup/
 otimizacao/pacotes-instalados.txt
 otimizacao/apks/*.apk
+*.jks
+*.keystore

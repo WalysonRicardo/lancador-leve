@@ -6,7 +6,7 @@ Uma home leve para o projetor HY320 (Android 11), com Netflix, YouTube, Pluto TV
 
 **Última versão:** https://github.com/WalysonRicardo/lancador-leve/releases/latest/download/lancador-leve.apk
 
-Cada envio para a branch `main` gera um APK novo em **Releases**, compilado pelo GitHub Actions. Todas as versões saem com a mesma assinatura, então dá para instalar por cima da anterior sem perder a ordem da home.
+Cada envio para a branch `main` gera um APK novo em **Releases**, compilado pelo GitHub Actions. Todas as versões saem com a mesma assinatura (chave guardada nos Secrets), então dá para instalar por cima da anterior sem perder a ordem da home.
 
 Instalar pelo computador: `adb -s IP_DO_PROJETOR:5555 install -r lancador-leve.apk`
 (ou rode `otimizacao/otimizar`, que baixa e instala sozinho).
@@ -114,7 +114,18 @@ adb -s IP:5555 shell dumpsys activity activities | find "topResumedActivity"
 
 ## Sobre a chave de assinatura
 
-`app/lancador-leve.jks` está no repositório para o Actions assinar todos os APKs igual. Num repositório público, qualquer pessoa pode assinar um APK com ela, mas ainda precisaria instalar no seu projetor, o que exige acesso ao ADB. Para mais segurança, mova a chave para os *Secrets* do repositório.
+A chave que assina os APKs fica só nos **Secrets** do repositório (Settings › Secrets and variables › Actions):
+
+| Secret | Conteúdo |
+|---|---|
+| `KEYSTORE_BASE64` | o arquivo `.jks` em base64 |
+| `KEYSTORE_PASSWORD` | senha do arquivo |
+| `KEY_ALIAS` | `lancador` |
+| `KEY_PASSWORD` | senha da chave |
+
+Sem eles o Actions para com um aviso. Para compilar no PC, o APK sai com a chave de debug, e para instalar por cima de uma versão do Releases é preciso desinstalar antes.
+
+Guarde uma cópia do `.jks` e das senhas fora do GitHub. Se a chave se perder, as próximas versões não instalam por cima das atuais.
 
 ## Ideias para as próximas versões
 

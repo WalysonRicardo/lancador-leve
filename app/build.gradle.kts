@@ -19,14 +19,18 @@ android {
         versionName = "0.2.$build"
     }
 
-    // Chave fixa: todo APK sai com a mesma assinatura, então dá para
-    // atualizar por cima sem desinstalar (e sem perder a ordem da home).
+    // A chave fica nos Secrets do GitHub, nunca no repositório.
+    // O Actions grava o arquivo e passa as senhas por variáveis de ambiente.
+    // Sem elas (build no seu PC), o APK sai assinado com a chave de debug.
+    val keystorePath = System.getenv("KEYSTORE_FILE")
     signingConfigs {
-        create("fixa") {
-            storeFile = file("lancador-leve.jks")
-            storePassword = "lancadorleve"
-            keyAlias = "lancador"
-            keyPassword = "lancadorleve"
+        if (keystorePath != null) {
+            create("fixa") {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
         }
     }
 
@@ -36,7 +40,7 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("fixa")
+            signingConfig = signingConfigs.findByName("fixa") ?: signingConfigs.getByName("debug")
         }
     }
 
