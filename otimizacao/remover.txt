@@ -1,0 +1,36 @@
+# Pacotes que o otimizar DESATIVA (não apaga). O restaurar reativa todos.
+# Uma linha por pacote. Linha começando com # é ignorada.
+# Pacote que não existe no seu projetor só gera um aviso, sem problema.
+#
+# --- Android genérico, inútil num projetor (seguro) ---
+com.android.printspooler
+com.android.bips
+com.android.printservice.recommendation
+com.android.bookmarkprovider
+com.android.dreams.basic
+com.android.dreams.phototable
+com.android.egg
+com.android.wallpaper.livepicker
+com.android.wallpaperbackup
+com.android.email
+com.android.calendar
+com.android.gallery3d
+com.android.music
+com.android.quicksearchbox
+com.android.stk
+com.android.cellbroadcastreceiver
+com.android.traceur
+com.android.dynsystem
+com.android.calllogbackup
+#
+# --- Apps do fabricante ---
+# Rode listar-pacotes, abra pacotes-instalados.txt e copie para cá
+# o que você não usa (loja do fabricante, navegador, gerenciador de
+# arquivos, apps de demonstração...). Exemplos de formato:
+# com.fabricante.appstore
+# com.fabricante.browser
+#
+# NÃO coloque aqui: o launcher original (ele guarda ajustes de foco,
+# trapézio e entrada HDMI), com.android.settings, com.android.systemui,
+# com.google.android.webview, com.android.providers.*, nada com
+# "keystone", "motor", "tvd", "source" ou "factory" no nome.

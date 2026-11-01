@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0B0D12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Controle do projetor</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:#0B0D12;color:#F2F3F5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;user-select:none;-webkit-user-select:none}
+  main{max-width:420px;margin:0 auto;padding:20px 20px 40px;display:flex;flex-direction:column;gap:18px}
+  header{display:flex;justify-content:space-between;align-items:center}
+  h1{font-size:22px;margin:0}
+  h2{font-size:15px;color:#A3A9B6;font-weight:600;margin:6px 0 0}
+  .sub{font-size:14px;color:#A3A9B6;margin-top:2px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#6B7280;margin-right:6px;vertical-align:middle}
+  .dot.on{background:#4ADE80}
+  button{font:inherit;color:#F2F3F5;background:#161A22;border:0;border-radius:14px;cursor:pointer;touch-action:manipulation}
+  button:active{background:#232937}
+  button:disabled{opacity:.4}
+  .power{width:52px;height:52px;border-radius:50%;background:#3A1A1A;color:#FF8A7A;font-size:22px}
+
+  .tabs{display:grid;grid-template-columns:1fr 1fr;background:#161A22;border-radius:14px;padding:4px;gap:4px}
+  .tabs button{height:44px;background:transparent;font-weight:700;font-size:15px;color:#A3A9B6}
+  .tabs button[aria-selected="true"]{background:#2A303C;color:#F2F3F5}
+  [hidden]{display:none!important}
+
+  .pad{width:min(76vw,268px);aspect-ratio:1;margin:0 auto;border-radius:50%;background:#161A22;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center}
+  .pad button{width:70px;height:70px;border-radius:50%;background:transparent;font-size:26px}
+  .pad button:active{background:#232937}
+  .pad .ok{width:92px;height:92px;background:#F2A93B;color:#1A1206;font-weight:800;font-size:20px}
+  .pad .ok:active{background:#FFC56B}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  .grid3 button{height:54px;font-weight:600;font-size:15px}
+
+  .voice{display:flex;align-items:center;gap:14px;background:#161A22;border-radius:18px;padding:12px 14px}
+  .mic{flex:none;width:64px;height:64px;border-radius:50%;background:#F2A93B;color:#1A1206;display:flex;align-items:center;justify-content:center}
+  .mic:active{background:#FFC56B}
+  .mic.live{background:#FF8A7A;animation:pulse 1s infinite}
+  @keyframes pulse{50%{transform:scale(1.08)}}
+  .vtext{font-size:14px;color:#C9CED8;line-height:1.35;min-width:0}
+  .vtext strong{display:block;color:#F2F3F5;font-size:16px;margin-bottom:2px;overflow-wrap:anywhere}
+  .vform{display:flex;gap:8px}
+
+  label{font-size:14px;color:#A3A9B6;display:block;margin-bottom:8px}
+  .row{display:flex;gap:8px}
+  input{flex:1;min-width:0;height:48px;border-radius:12px;border:1px solid #2A303C;background:#12151C;color:#F2F3F5;padding:0 14px;font-size:16px;user-select:text;-webkit-user-select:text}
+  .send{padding:0 16px;height:48px;background:#2A303C;font-weight:700}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips button{height:40px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:600}
+
+  .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+  .list li{display:flex;align-items:center;gap:10px;background:#161A22;border-radius:14px;padding:6px 6px 6px 4px;min-height:56px}
+  .list li.drag{background:#2A303C;box-shadow:0 8px 24px rgba(0,0,0,.5);position:relative;z-index:2}
+  .handle{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;color:#A3A9B6;touch-action:none;cursor:grab;border-radius:10px}
+  .pos{width:22px;flex:none;text-align:center;color:#A3A9B6;font-size:13px;font-weight:700}
+  .lbl{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tag{font-size:12px;color:#F2A93B;font-weight:600;margin-left:6px}
+  .icon{width:44px;height:44px;flex:none;border-radius:10px;background:transparent;color:#A3A9B6;font-size:20px}
+  .add{height:40px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;background:#2A303C;flex:none}
+  .hint{font-size:13px;color:#A3A9B6;margin:0}
+  .ghost{background:transparent;border:1px solid #2A303C;height:44px;font-weight:600;color:#C9CED8}
+
+  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2A303C;color:#F2F3F5;padding:12px 16px;border-radius:12px;font-size:14px;max-width:90vw;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.show{opacity:1}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <h1>Projetor da sala</h1>
+      <div class="sub"><span id="dot" class="dot"></span><span id="st">verificando…</span></div>
+    </div>
+    <button class="power" aria-label="Ligar ou desligar" data-key="power">⏻</button>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" id="tabCtl" aria-selected="true" aria-controls="ctl">Controle</button>
+    <button role="tab" id="tabOrg" aria-selected="false" aria-controls="org">Organizar home</button>
+  </div>
+
+  <!-- ======================= CONTROLE ======================= -->
+  <section id="ctl" role="tabpanel" aria-labelledby="tabCtl" style="display:flex;flex-direction:column;gap:18px">
+    <div class="voice">
+      <button class="mic" id="mic" aria-label="Falar um comando">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
+      </button>
+      <div class="vtext" id="vtext"><strong>Toque e fale</strong>"abrir Netflix", "aumentar volume", "pesquisar louvor"</div>
+    </div>
+    <div class="vform" id="vform" hidden>
+      <input id="vz" type="text" placeholder="Toque no microfone do teclado e fale" autocomplete="off" enterkeyhint="send">
+      <button class="send" id="vgo">Ir</button>
+    </div>
+
+    <div class="pad">
+      <span></span><button aria-label="Cima" data-key="up" data-rep>▲</button><span></span>
+      <button aria-label="Esquerda" data-key="left" data-rep>◀</button>
+      <button class="ok" data-key="ok">OK</button>
+      <button aria-label="Direita" data-key="right" data-rep>▶</button>
+      <span></span><button aria-label="Baixo" data-key="down" data-rep>▼</button><span></span>
+    </div>
+
+    <div class="grid3">
+      <button data-key="back">Voltar</button>
+      <button data-key="home">Início</button>
+      <button data-key="menu">Menu</button>
+      <button data-key="voldown" data-rep>Vol −</button>
+      <button data-key="play">Play/Pausa</button>
+      <button data-key="volup" data-rep>Vol +</button>
+    </div>
+
+    <div>
+      <label for="t">Digitar no projetor (busca, senha do Wi-Fi)</label>
+      <div class="row">
+        <input id="t" type="text" placeholder="Escreva aqui…" autocomplete="off" enterkeyhint="send">
+        <button class="send" id="send">Enviar</button>
+      </div>
+    </div>
+
+    <div>
+      <label>Abrir direto</label>
+      <div class="chips" id="chips"></div>
+    </div>
+  </section>
+
+  <!-- ======================= ORGANIZAR ======================= -->
+  <section id="org" role="tabpanel" aria-labelledby="tabOrg" hidden style="flex-direction:column;gap:12px">
+    <p class="hint">Segure o <strong>≡</strong> e arraste para mudar a ordem. A home do projetor muda na hora.</p>
+    <ul class="list" id="homeList"></ul>
+    <h2 id="othersTitle">Adicionar à home</h2>
+    <ul class="list" id="othersList"></ul>
+    <button class="ghost" id="reset">Voltar à ordem padrão</button>
+  </section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- utilidades ---------- */
+const $ = (id) => document.getElementById(id);
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+const vib = () => { try { navigator.vibrate && navigator.vibrate(12) } catch (e) {} };
+const toast = (t) => { const m = $('toast'); m.textContent = t; m.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => m.classList.remove('show'), 2600); };
+const call = (url) => fetch(url, { cache: 'no-store' })
+  .then(r => r.ok ? r.text() : r.text().then(t => { toast(t); throw 0; }))
+  .catch((e) => { if (e !== 0) toast('Sem conexão com o projetor'); throw e; });
+const key = (k) => call('/key?c=' + k).catch(() => {});
+const keys = async (k, n) => { for (let i = 0; i < n; i++) { key(k); await sleep(140); } };
+const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+  .replace(/[^a-z0-9+\s]/g, ' ').replace(/\s+/g, ' ').trim();
+
+/* ---------- abas ---------- */
+const tabs = { ctl: $('tabCtl'), org: $('tabOrg') };
+function show(which) {
+  for (const k in tabs) {
+    const on = k === which;
+    tabs[k].setAttribute('aria-selected', on);
+    $(k).hidden = !on;
+    if (on) $(k).style.display = 'flex';
+  }
+  if (which === 'org') loadApps();
+}
+tabs.ctl.onclick = () => show('ctl');
+tabs.org.onclick = () => show('org');
+
+/* ---------- teclas ---------- */
+document.querySelectorAll('[data-key]').forEach(b => {
+  const k = b.dataset.key;
+  let rep = null, delay = null;
+  const fire = () => { vib(); key(k); };
+  const stop = () => { clearTimeout(delay); clearInterval(rep); delay = rep = null; };
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault(); fire();
+    if (b.hasAttribute('data-rep')) delay = setTimeout(() => { rep = setInterval(fire, 160); }, 400);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
+});
+
+const t = $('t');
+const sendText = () => { if (!t.value) return; call('/text?t=' + encodeURIComponent(t.value)).catch(() => {}); t.value = ''; };
+$('send').onclick = sendText;
+t.addEventListener('keydown', e => { if (e.key === 'Enter') sendText(); });
+
+/* ---------- apps (home + outros) ---------- */
+let apps = { max: 12, home: [], others: [] };
+const appKey = (s) => norm(s).replace(/\b(mais|plus|tv|app|aplicativo|o|a)\b/g, '').replace(/[^a-z0-9]/g, '');
+function findApp(spoken) {
+  const k = appKey(spoken);
+  if (k.length < 2) return null;
+  const all = apps.home.filter(a => a.installed).concat(apps.others);
+  return all.find(a => appKey(a.label) === k)
+      || all.find(a => { const l = appKey(a.label); return l.length >= 3 && (k.startsWith(l) || l.startsWith(k)); })
+      || null;
+}
+const launch = (a) => call('/launch?app=' + encodeURIComponent(a.id)).then(() => toast('Abrindo ' + a.label)).catch(() => {});
+
+function renderChips() {
+  const box = $('chips'); box.textContent = '';
+  apps.home.filter(a => a.installed).forEach(a => {
+    const b = document.createElement('button');
+    b.textContent = a.label;
+    b.onclick = () => { vib(); launch(a); };
+    box.appendChild(b);
+  });
+}
+
+async function loadApps() {
+  try {
+    apps = await fetch('/apps', { cache: 'no-store' }).then(r => r.json());
+    renderChips(); renderOrg();
+  } catch (e) {}
+}
+
+/* ---------- organizar (arrastar) ---------- */
+const handleSvg = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>';
+
+function renderOrg() {
+  const list = $('homeList'); list.textContent = '';
+  apps.home.forEach(a => {
+    const li = document.createElement('li');
+    li.dataset.id = a.id;
+    li.innerHTML = '<span class="handle" aria-label="Arrastar">' + handleSvg + '</span><span class="pos"></span><span class="lbl"></span><button class="icon" aria-label="Tirar da home">×</button>';
+    li.querySelector('.lbl').textContent = a.label;
+    if (!a.installed) { const tg = document.createElement('span'); tg.className = 'tag'; tg.textContent = 'não instalado'; li.querySelector('.lbl').appendChild(tg); }
+    li.querySelector('.icon').onclick = () => { li.remove(); saveOrder(); };
+    enableDrag(li);
+    list.appendChild(li);
+  });
+  numberRows();
+
+  const full = apps.home.length >= apps.max;
+  const ol = $('othersList'); ol.textContent = '';
+  $('othersTitle').textContent = full ? 'Home cheia (máx. ' + apps.max + ')' : 'Adicionar à home';
+  apps.others.forEach(a => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="lbl" style="padding-left:12px"></span><button class="add">+ Adicionar</button>';
+    li.querySelector('.lbl').textContent = a.label;
+    const b = li.querySelector('.add');
+    b.disabled = full;
+    b.onclick = () => { saveOrder([...currentIds(), a.id]); };
+    ol.appendChild(li);
+  });
+}
+
+const currentIds = () => [...$('homeList').children].map(li => li.dataset.id);
+const numberRows = () => [...$('homeList').children].forEach((li, i) => li.querySelector('.pos').textContent = i + 1);
+
+function saveOrder(ids) {
+  ids = ids || currentIds();
+  call('/order?ids=' + encodeURIComponent(ids.join(',')))
+    .then(() => { toast('Home atualizada'); loadApps(); })
+    .catch(() => loadApps());
+}
+
+function enableDrag(li) {
+  const h = li.querySelector('.handle');
+  let dragging = false, startOrder = '';
+  h.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    h.setPointerCapture(e.pointerId);
+    dragging = true; startOrder = currentIds().join(',');
+    li.classList.add('drag'); vib();
+  });
+  h.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const list = li.parentNode, y = e.clientY;
+    let before = null;
+    for (const it of list.children) {
+      if (it === li) continue;
+      const r = it.getBoundingClientRect();
+      if (y < r.top + r.height / 2) { before = it; break; }
+    }
+    if (before !== li.nextSibling) { list.insertBefore(li, before); numberRows(); vib(); }
+    // rola a página se arrastar perto da borda
+    if (y < 60) window.scrollBy(0, -12); else if (y > innerHeight - 60) window.scrollBy(0, 12);
+  });
+  const end = () => {
+    if (!dragging) return;
+    dragging = false; li.classList.remove('drag');
+    if (currentIds().join(',') !== startOrder) saveOrder();
+  };
+  h.addEventListener('pointerup', end);
+  h.addEventListener('pointercancel', end);
+}
+
+$('reset').onclick = () => call('/order?reset=1').then(() => { toast('Ordem padrão'); loadApps(); }).catch(() => {});
+
+/* ---------- voz ---------- */
+const NUM = { um: 1, uma: 1, dois: 2, duas: 2, tres: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, nove: 9, dez: 10 };
+function count(s, def) {
+  const m = s.match(/\b(\d+|um|uma|dois|duas|tres|quatro|cinco|seis|sete|oito|nove|dez)\b/);
+  if (!m) return def;
+  const n = NUM[m[1]] || parseInt(m[1], 10);
+  return Math.max(1, Math.min(n || def, 15));
+}
+const afterFirstWord = (raw) => raw.trim().replace(/^\S+\s+(por\s+|o\s+|a\s+)?/i, '');
+
+// Devolve a descrição do que foi feito, ou null se não entendeu.
+function interpret(raw) {
+  const s = norm(raw);
+  if (!s) return null;
+  let m;
+
+  if ((m = s.match(/^(pesquisar|pesquisa|pesquise|buscar|busca|busque|procurar|procura|procure)\b/))) {
+    const q = afterFirstWord(raw); if (!q) return null;
+    call('/text?enter=1&t=' + encodeURIComponent(q)).catch(() => {});
+    return 'Pesquisando "' + q + '"';
+  }
+  if ((m = s.match(/^(digitar|digita|digite|escrever|escreve|escreva)\b/))) {
+    const q = afterFirstWord(raw); if (!q) return null;
+    call('/text?t=' + encodeURIComponent(q)).catch(() => {});
+    return 'Digitando "' + q + '"';
+  }
+  if (/\b(volume|som)\b/.test(s) || /\b(aumenta|aumentar|abaixa|abaixar|diminui|diminuir)\b/.test(s)) {
+    if (/(aument|sob|mais|alto)/.test(s)) { keys('volup', count(s, 3)); return 'Volume +'; }
+    if (/(diminu|abaix|baix|menos)/.test(s)) { keys('voldown', count(s, 3)); return 'Volume −'; }
+  }
+  if (/\b(mudo|silencia|silenciar|sem som|tira o som|tirar o som)\b/.test(s)) { key('mute'); return 'Mudo'; }
+  if (/\b(desliga|desligar|desligue)\b/.test(s)) { key('power'); return 'Desligando'; }
+  if (/\b(voltar|volta|volte|retornar)\b/.test(s)) { key('back'); return 'Voltar'; }
+  if (/\b(inicio|tela inicial|home|comeco)\b/.test(s)) { key('home'); return 'Início'; }
+  if (/\b(menu|opcoes)\b/.test(s)) { key('menu'); return 'Menu'; }
+  if (/\b(cima|subir|sobe|suba)\b/.test(s)) { const n = count(s, 1); keys('up', n); return 'Cima ×' + n; }
+  if (/\b(baixo|descer|desce|desca)\b/.test(s)) { const n = count(s, 1); keys('down', n); return 'Baixo ×' + n; }
+  if (/\besquerda\b/.test(s)) { const n = count(s, 1); keys('left', n); return 'Esquerda ×' + n; }
+  if (/\bdireita\b/.test(s)) { const n = count(s, 1); keys('right', n); return 'Direita ×' + n; }
+  if ((m = s.match(/^(abrir|abre|abra|abri|coloca|colocar|coloque|bota|botar|ir para|vai para|entrar no|entrar na|entra no|entra na|assistir|quero ver)\s+(o |a |no |na )?(.+)$/))) {
+    const a = findApp(m[3]);
+    if (a) { launch(a); return 'Abrindo ' + a.label; }
+    return 'Não achei o app "' + m[3] + '"';
+  }
+  const direct = findApp(s);
+  if (direct) { launch(direct); return 'Abrindo ' + direct.label; }
+
+  if (/\b(pausa|pausar|pause|play|continua|continuar|continue|tocar|toca|retomar|dar play|parar|para)\b/.test(s)) { key('play'); return 'Play/Pausa'; }
+  if (/\b(ok|confirma|confirmar|selecionar|seleciona|enter|aperta|apertar)\b/.test(s)) { key('ok'); return 'OK'; }
+  return null;
+}
+
+function runVoice(text) {
+  const done = interpret(text);
+  $('vtext').innerHTML = '';
+  const strong = document.createElement('strong'); strong.textContent = '"' + text + '"';
+  $('vtext').appendChild(strong);
+  $('vtext').appendChild(document.createTextNode(done || 'Não entendi. Tente "abrir YouTube" ou "volume mais".'));
+  if (done) vib();
+}
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+// O microfone do navegador só funciona em página "segura". Em http://IP
+// usamos o ditado do teclado do celular (o microfone do Gboard), que funciona sempre.
+const browserMic = !!SR && window.isSecureContext;
+let rec = null;
+
+$('mic').onclick = () => {
+  vib();
+  if (!browserMic) {
+    $('vform').hidden = false;
+    $('vz').focus();
+    $('vtext').innerHTML = '<strong>Fale pelo teclado</strong>Toque no microfone do teclado, fale e toque em Ir.';
+    return;
+  }
+  if (rec) { rec.stop(); return; }
+  rec = new SR();
+  rec.lang = 'pt-BR';
+  rec.interimResults = true;
+  rec.maxAlternatives = 1;
+  $('mic').classList.add('live');
+  $('vtext').innerHTML = '<strong>Ouvindo…</strong>Fale o comando';
+  rec.onresult = (e) => {
+    const r = e.results[e.results.length - 1];
+    if (r.isFinal) runVoice(r[0].transcript);
+    else $('vtext').querySelector('strong').textContent = r[0].transcript;
+  };
+  rec.onerror = (e) => {
+    if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
+      $('vform').hidden = false;
+      $('vtext').innerHTML = '<strong>Microfone bloqueado</strong>Use o microfone do teclado no campo abaixo.';
+    }
+  };
+  rec.onend = () => { rec = null; $('mic').classList.remove('live'); };
+  rec.start();
+};
+const goVoice = () => { const v = $('vz').value.trim(); if (v) { runVoice(v); $('vz').value = ''; } };
+$('vgo').onclick = goVoice;
+$('vz').addEventListener('keydown', e => { if (e.key === 'Enter') goVoice(); });
+
+/* ---------- status ---------- */
+const poll = () => fetch('/status', { cache: 'no-store' }).then(r => r.json()).then(s => {
+  $('dot').classList.toggle('on', s.adb);
+  $('st').textContent = s.adb ? 'conectado' : 'aguardando permissão de depuração na tela do projetor';
+}).catch(() => { $('dot').classList.remove('on'); $('st').textContent = 'fora do ar'; });
+poll(); setInterval(poll, 5000);
+loadApps();
+</script>
+</body>
+</html>

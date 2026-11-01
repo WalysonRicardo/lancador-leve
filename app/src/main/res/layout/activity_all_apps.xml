@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/fundo"
+    android:padding="40dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Todos os apps"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/texto" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="20dp"
+        android:text="OK abre · segure OK para ver detalhes do app"
+        android:textSize="14sp"
+        android:textColor="@color/texto_suave" />
+
+    <GridView
+        android:id="@+id/grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:numColumns="7"
+        android:horizontalSpacing="14dp"
+        android:verticalSpacing="14dp"
+        android:stretchMode="columnWidth"
+        android:listSelector="@drawable/ring"
+        android:drawSelectorOnTop="true" />
+</LinearLayout>

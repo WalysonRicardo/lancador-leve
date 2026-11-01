@@ -1,0 +1,7 @@
+Coloque nesta pasta os .apk que o otimizar deve instalar:
+
+- lancador-leve.apk (gerado pelo GitHub Actions, veja o LEIA-ME)
+- SmartTube: só do GitHub oficial (github.com/yuliskov/SmartTube)
+- Netflix versão TV, Stremio, Pluto TV, Globoplay, SBT+ (se não vierem pela loja)
+
+Baixe APKs só de fontes confiáveis (site oficial, GitHub oficial ou APKMirror).

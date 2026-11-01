@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="fundo">#FF0B0D12</color>
+    <color name="superficie">#FF161A22</color>
+    <color name="texto">#FFF2F3F5</color>
+    <color name="texto_suave">#FFA3A9B6</color>
+    <color name="destaque">#FFF2A93B</color>
+
+    <style name="Theme.Leve" parent="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@color/fundo</item>
+        <item name="android:colorBackground">@color/fundo</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:textColor">@color/texto</item>
+        <item name="android:colorAccent">@color/destaque</item>
+    </style>
+</resources>
