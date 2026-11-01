@@ -57,14 +57,34 @@ object Config {
         Favorite(
             "sbt", "SBT+", "S", 0xFF123A6B.toInt(),
             "Programação do SBT e ao vivo",
-            emptyList(), // pacote varia: acha pelo nome
-            listOf("sbt"),
+            listOf("br.com.sbt.mais", "br.com.sbt.tv", "com.sbt.android"),
+            listOf("sbt", "+sbt"),
+        ),
+        Favorite(
+            "prime", "Prime Video", "PV", 0xFF005C99.toInt(),
+            "Filmes, séries e canais Amazon",
+            listOf("com.amazon.avod.thirdpartyclient", "com.amazon.amazonvideo.livingroom"),
+            listOf("prime video", "prime"),
         ),
         Favorite(
             "stremio", "Stremio", "St", 0xFF3B2366.toInt(),
             "Filmes e séries por add-ons",
             listOf("com.stremio.one"),
             listOf("stremio"),
+        ),
+        Favorite(
+            "pendrive", "Pendrive / Vídeos", "USB", 0xFF145242.toInt(),
+            "Filmes e vídeos do pendrive com legendas",
+            listOf(
+                "org.courville.nova",
+                "com.brouken.player",
+                "is.xyz.mpv",
+                "org.videolan.vlc",
+                "com.droidlogic.videoplayer",
+                "com.droidlogic.mediacenter",
+                "com.droidlogic.FileBrower",
+            ),
+            listOf("nova", "just player", "vlc", "video", "pendrive"),
         ),
     )
 
@@ -87,5 +107,14 @@ object Config {
         "com.ionitech.airscreen",
         "com.droidlogic.miracast",
         "com.ecloud.eshare.server",
+    )
+    val usbPackages = listOf(
+        "org.courville.nova",
+        "com.brouken.player",
+        "is.xyz.mpv",
+        "org.videolan.vlc",
+        "com.droidlogic.videoplayer",
+        "com.droidlogic.mediacenter",
+        "com.droidlogic.FileBrower",
     )
 }

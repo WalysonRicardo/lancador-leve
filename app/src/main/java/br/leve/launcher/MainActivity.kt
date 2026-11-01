@@ -153,6 +153,7 @@ class MainActivity : Activity() {
         val tools = listOf(
             Tool("Entrada HDMI", "Troca para a fonte HDMI") { openVendor(Config.hdmiPackages, Settings.ACTION_SETTINGS) },
             Tool("Foco e trapézio", "Ajuste de imagem do projetor") { openVendor(Config.focusPackages, Settings.ACTION_DISPLAY_SETTINGS) },
+            Tool("Pendrive / USB", "Vídeos e filmes do pendrive com legendas") { openVendor(Config.usbPackages, Settings.ACTION_INTERNAL_STORAGE_SETTINGS) },
             Tool("Wi-Fi", "Configurações de rede") { openSettings(Settings.ACTION_WIFI_SETTINGS) },
             Tool("Bluetooth", "Caixa de som, fone ou controle") { openSettings(Settings.ACTION_BLUETOOTH_SETTINGS) },
             Tool("Espelhar tela", "Recebe a tela do celular") { openVendor(Config.mirrorPackages, Settings.ACTION_CAST_SETTINGS) },
