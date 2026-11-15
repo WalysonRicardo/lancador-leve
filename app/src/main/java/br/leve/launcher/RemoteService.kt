@@ -17,6 +17,7 @@ class RemoteService : Service() {
     override fun onCreate() {
         super.onCreate()
         startForeground(1, notification())
+        CursorOverlay.init(this)
         KeyInjector.init(this)
         KeyInjector.warmUp()
         server = RemoteServer(this, Config.REMOTE_PORT).also { it.start() }
@@ -26,6 +27,7 @@ class RemoteService : Service() {
 
     override fun onDestroy() {
         server?.stop()
+        CursorOverlay.destroy()
         KeyInjector.close()
         super.onDestroy()
     }

@@ -6,64 +6,127 @@
 <meta name="theme-color" content="#0B0D12">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Controle do projetor</title>
+<title>Controle do Projetor</title>
 <style>
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
   body{margin:0;background:#0B0D12;color:#F2F3F5;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;user-select:none;-webkit-user-select:none}
-  main{max-width:420px;margin:0 auto;padding:20px 20px 40px;display:flex;flex-direction:column;gap:18px}
-  header{display:flex;justify-content:space-between;align-items:center}
-  h1{font-size:22px;margin:0}
-  h2{font-size:15px;color:#A3A9B6;font-weight:600;margin:6px 0 0}
-  .sub{font-size:14px;color:#A3A9B6;margin-top:2px}
-  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#6B7280;margin-right:6px;vertical-align:middle}
+  main{max-width:460px;margin:0 auto;padding:16px 16px 44px;display:flex;flex-direction:column;gap:16px}
+  header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  h1{font-size:20px;margin:0}
+  h2{font-size:15px;color:#A3A9B6;font-weight:700;margin:4px 0 0}
+  .sub{font-size:13px;color:#A3A9B6;margin-top:3px;display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:#6B7280}
   .dot.on{background:#4ADE80}
-  button{font:inherit;color:#F2F3F5;background:#161A22;border:0;border-radius:14px;cursor:pointer;touch-action:manipulation}
-  button:active{background:#232937}
+  .badge-app{background:#1F2633;color:#F2A93B;padding:2px 8px;border-radius:999px;font-weight:700;font-size:12px}
+  button{font:inherit;color:#F2F3F5;background:#161A22;border:0;border-radius:14px;cursor:pointer;touch-action:manipulation;transition:transform .06s,background .12s}
+  button:active{background:#262D3D;transform:scale(0.98)}
   button:disabled{opacity:.4}
-  .power{width:52px;height:52px;border-radius:50%;background:#3A1A1A;color:#FF8A7A;font-size:22px}
+  .power{width:48px;height:48px;border-radius:50%;background:#3A1A1A;color:#FF8A7A;font-size:20px;flex:none}
 
-  .tabs{display:grid;grid-template-columns:1fr 1fr;background:#161A22;border-radius:14px;padding:4px;gap:4px}
-  .tabs button{height:44px;background:transparent;font-weight:700;font-size:15px;color:#A3A9B6}
+  .tabs{display:grid;grid-template-columns:repeat(5,1fr);background:#161A22;border-radius:14px;padding:4px;gap:3px}
+  .tabs button{height:44px;background:transparent;font-weight:700;font-size:12px;color:#A3A9B6;border-radius:10px;padding:0 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
+  .tabs button span{font-size:15px}
   .tabs button[aria-selected="true"]{background:#2A303C;color:#F2F3F5}
   [hidden]{display:none!important}
 
-  .pad{width:min(76vw,268px);aspect-ratio:1;margin:0 auto;border-radius:50%;background:#161A22;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center}
-  .pad button{width:70px;height:70px;border-radius:50%;background:transparent;font-size:26px}
-  .pad button:active{background:#232937}
-  .pad .ok{width:92px;height:92px;background:#F2A93B;color:#1A1206;font-weight:800;font-size:20px}
-  .pad .ok:active{background:#FFC56B}
-  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-  .grid3 button{height:54px;font-weight:600;font-size:15px}
+  .card{background:#141821;border:1px solid #222836;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+  .card-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .card-title{font-size:14px;font-weight:700;color:#E5E7EB;margin:0}
+  .pill-tag{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;background:#2A303C;color:#F2A93B}
+  .pill-beta{background:#3B1D5E;color:#D8B4FE;border:1px solid #6D28D9}
 
-  .voice{display:flex;align-items:center;gap:14px;background:#161A22;border-radius:18px;padding:12px 14px}
-  .mic{flex:none;width:64px;height:64px;border-radius:50%;background:#F2A93B;color:#1A1206;display:flex;align-items:center;justify-content:center}
-  .mic:active{background:#FFC56B}
+  .mode-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:#10131A;padding:4px;border-radius:12px}
+  .mode-bar button{height:36px;font-size:12px;font-weight:700;border-radius:9px;background:transparent;color:#9CA3AF}
+  .mode-bar button.active{background:#F2A93B;color:#1A1206}
+
+  .pad{width:min(74vw,256px);aspect-ratio:1;margin:0 auto;border-radius:50%;background:#161A22;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center;border:1px solid #222836}
+  .pad button{width:68px;height:68px;border-radius:50%;background:transparent;font-size:24px}
+  .pad button:active{background:#232937}
+  .pad .ok{width:88px;height:88px;background:#F2A93B;color:#1A1206;font-weight:800;font-size:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1}
+  .pad .ok small{font-size:10px;font-weight:700;opacity:.85}
+  .pad .ok:active{background:#FFC56B}
+
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+  .grid2 button,.grid3 button,.grid4 button{min-height:48px;padding:6px 8px;font-weight:600;font-size:13px;line-height:1.2}
+  .btn-accent{background:#252D3D;color:#F2A93B;border:1px solid #364156}
+  .btn-primary{background:#F2A93B;color:#1A1206;font-weight:800}
+  .btn-sub{background:#1B2432;border:1px solid #2B394F;color:#E2E8F0}
+  .btn-active{background:#14532D!important;border:1px solid #22C55E!important;color:#DCFCE7!important}
+
+  /* MouseTrack Touchpad */
+  .track-wrap{display:grid;grid-template-columns:1fr 44px;gap:8px;align-items:stretch}
+  .trackpad{height:230px;background:radial-gradient(circle at 50% 50%,#1B212E 0%,#12151E 100%);border:1.5px solid #2E3648;border-radius:18px;position:relative;touch-action:none;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:12px}
+  .trackpad.touching{border-color:#F2A93B;box-shadow:0 0 0 2px rgba(242,169,59,.2)}
+  .track-hint{font-size:12px;color:#8E96A8;pointer-events:none;text-align:center}
+  .track-pos{font-size:11px;color:#F2A93B;font-family:monospace;pointer-events:none}
+  .track-ripple{position:absolute;width:28px;height:28px;border-radius:50%;border:2px solid #F2A93B;transform:translate(-50%,-50%) scale(0.5);opacity:0;pointer-events:none;transition:transform .2s,opacity .2s}
+  .track-ripple.on{transform:translate(-50%,-50%) scale(1.3);opacity:1}
+  .vscroll{background:#161A22;border:1px solid #262D3D;border-radius:14px;touch-action:none;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 0;color:#9CA3AF;font-size:12px;font-weight:700}
+  .vscroll:active{border-color:#F2A93B;color:#F2A93B}
+  .hscroll{height:40px;background:#161A22;border:1px solid #262D3D;border-radius:12px;touch-action:none;display:flex;align-items:center;justify-content:space-between;padding:0 14px;color:#9CA3AF;font-size:12px;font-weight:700}
+  .hscroll:active{border-color:#F2A93B;color:#F2A93B}
+
+  /* App Selector Bar */
+  .app-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+  .app-tabs::-webkit-scrollbar{display:none}
+  .app-tabs button{flex:none;height:38px;padding:0 13px;border-radius:999px;font-size:13px;font-weight:700;background:#161A22;color:#A3A9B6;border:1px solid #232938}
+  .app-tabs button.active{background:#F2A93B;color:#1A1206;border-color:#F2A93B}
+
+  /* Audio & Subtitles Mirror */
+  .av-cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .av-col{background:#10131A;border:1px solid #222836;border-radius:12px;padding:8px;display:flex;flex-direction:column;gap:6px}
+  .av-col h4{margin:0 0 2px;font-size:12px;color:#F2A93B;text-transform:uppercase;letter-spacing:.4px}
+  .av-col button{min-height:40px;padding:6px 8px;font-size:12px;font-weight:600;text-align:left;border-radius:9px;background:#181D27;display:flex;justify-content:space-between;align-items:center;gap:4px}
+
+  /* Voice & Text */
+  .voice{display:flex;align-items:center;gap:12px;background:#161A22;border-radius:16px;padding:10px 12px}
+  .mic{flex:none;width:54px;height:54px;border-radius:50%;background:#F2A93B;color:#1A1206;display:flex;align-items:center;justify-content:center}
   .mic.live{background:#FF8A7A;animation:pulse 1s infinite}
   @keyframes pulse{50%{transform:scale(1.08)}}
-  .vtext{font-size:14px;color:#C9CED8;line-height:1.35;min-width:0}
-  .vtext strong{display:block;color:#F2F3F5;font-size:16px;margin-bottom:2px;overflow-wrap:anywhere}
+  .vtext{font-size:13px;color:#C9CED8;line-height:1.35;min-width:0}
+  .vtext strong{display:block;color:#F2F3F5;font-size:15px;margin-bottom:2px}
   .vform{display:flex;gap:8px}
-
-  label{font-size:14px;color:#A3A9B6;display:block;margin-bottom:8px}
+  label{font-size:13px;color:#A3A9B6;display:block;margin-bottom:6px;font-weight:600}
   .row{display:flex;gap:8px}
-  input{flex:1;min-width:0;height:48px;border-radius:12px;border:1px solid #2A303C;background:#12151C;color:#F2F3F5;padding:0 14px;font-size:16px;user-select:text;-webkit-user-select:text}
-  .send{padding:0 16px;height:48px;background:#2A303C;font-weight:700}
+  input{flex:1;min-width:0;height:44px;border-radius:12px;border:1px solid #2A303C;background:#12151C;color:#F2F3F5;padding:0 12px;font-size:15px;user-select:text;-webkit-user-select:text}
+  .send{padding:0 14px;height:44px;background:#2A303C;font-weight:700}
   .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chips button{height:40px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:600}
+  .chips button{height:38px;padding:0 13px;border-radius:999px;font-size:13px;font-weight:600}
 
+  /* Gamepad Beta */
+  .gp-triggers{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px}
+  .gp-triggers button{height:44px;font-weight:800;font-size:14px;background:#1E2433;border:1px solid #323C52;border-radius:12px}
+  .gp-body{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:center;padding:8px 0}
+  .gp-dpad{aspect-ratio:1;max-width:176px;width:100%;margin:0 auto;background:#161A22;border-radius:50%;border:2px solid #262E40;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center;padding:6px}
+  .gp-dpad button{width:50px;height:50px;border-radius:12px;font-size:20px;background:#202634}
+  .gp-dpad button:active{background:#F2A93B;color:#1A1206}
+  .gp-abxy{aspect-ratio:1;max-width:176px;width:100%;margin:0 auto;background:#161A22;border-radius:50%;border:2px solid #262E40;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);place-items:center;padding:6px}
+  .gp-abxy button{width:52px;height:52px;border-radius:50%;font-weight:900;font-size:18px;box-shadow:0 4px 10px rgba(0,0,0,.35)}
+  .btn-y{background:#EAB308;color:#1A1206}
+  .btn-x{background:#2563EB;color:#FFF}
+  .btn-b{background:#DC2626;color:#FFF}
+  .btn-a{background:#16A34A;color:#FFF}
+  .gp-stick-area{height:110px;background:#10141D;border:1.5px dashed #2E374B;border-radius:16px;position:relative;touch-action:none;display:flex;align-items:center;justify-content:center}
+  .gp-stick-knob{width:46px;height:46px;border-radius:50%;background:#F2A93B;color:#1A1206;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center;pointer-events:none;box-shadow:0 4px 14px rgba(0,0,0,.5)}
+  .gp-center{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .gp-center button{height:38px;border-radius:999px;font-size:12px;font-weight:800;background:#1F2533}
+
+  /* Organizar Home */
   .list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-  .list li{display:flex;align-items:center;gap:10px;background:#161A22;border-radius:14px;padding:6px 6px 6px 4px;min-height:56px}
+  .list li{display:flex;align-items:center;gap:10px;background:#161A22;border-radius:14px;padding:6px 6px 6px 4px;min-height:52px}
   .list li.drag{background:#2A303C;box-shadow:0 8px 24px rgba(0,0,0,.5);position:relative;z-index:2}
-  .handle{width:44px;height:44px;flex:none;display:flex;align-items:center;justify-content:center;color:#A3A9B6;touch-action:none;cursor:grab;border-radius:10px}
+  .handle{width:42px;height:42px;flex:none;display:flex;align-items:center;justify-content:center;color:#A3A9B6;touch-action:none;cursor:grab}
   .pos{width:22px;flex:none;text-align:center;color:#A3A9B6;font-size:13px;font-weight:700}
   .lbl{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .tag{font-size:12px;color:#F2A93B;font-weight:600;margin-left:6px}
-  .icon{width:44px;height:44px;flex:none;border-radius:10px;background:transparent;color:#A3A9B6;font-size:20px}
-  .add{height:40px;padding:0 14px;border-radius:999px;font-size:14px;font-weight:700;background:#2A303C;flex:none}
-  .hint{font-size:13px;color:#A3A9B6;margin:0}
-  .ghost{background:transparent;border:1px solid #2A303C;height:44px;font-weight:600;color:#C9CED8}
+  .tag{font-size:11px;color:#F2A93B;font-weight:600;margin-left:6px}
+  .icon{width:42px;height:42px;flex:none;border-radius:10px;background:transparent;color:#A3A9B6;font-size:20px}
+  .add{height:38px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:700;background:#2A303C;flex:none}
+  .hint{font-size:12px;color:#A3A9B6;margin:0}
+  .ghost{background:transparent;border:1px solid #2A303C;height:42px;font-weight:600;color:#C9CED8}
 
-  .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2A303C;color:#F2F3F5;padding:12px 16px;border-radius:12px;font-size:14px;max-width:90vw;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#2A303C;color:#F2F3F5;padding:10px 16px;border-radius:12px;font-size:13px;font-weight:600;max-width:92vw;opacity:0;transition:opacity .2s;pointer-events:none;z-index:50;box-shadow:0 6px 20px rgba(0,0,0,.45)}
   .toast.show{opacity:1}
 </style>
 </head>
@@ -71,45 +134,79 @@
 <main>
   <header>
     <div>
-      <h1>Projetor da sala</h1>
-      <div class="sub"><span id="dot" class="dot"></span><span id="st">verificando…</span></div>
+      <h1>Projetor HY320</h1>
+      <div class="sub">
+        <span id="dot" class="dot"></span>
+        <span id="st">verificando…</span>
+        <span id="activeBadge" class="badge-app">Tela inicial</span>
+      </div>
     </div>
     <button class="power" aria-label="Ligar ou desligar" data-key="power">⏻</button>
   </header>
 
   <div class="tabs" role="tablist">
-    <button role="tab" id="tabCtl" aria-selected="true" aria-controls="ctl">Controle</button>
-    <button role="tab" id="tabOrg" aria-selected="false" aria-controls="org">Organizar home</button>
+    <button role="tab" id="tabCtl" aria-selected="true"><span>🎛️</span>Controle</button>
+    <button role="tab" id="tabMouse" aria-selected="false"><span>🖱️</span>MouseTrack</button>
+    <button role="tab" id="tabApps" aria-selected="false"><span>📱</span>Por App</button>
+    <button role="tab" id="tabGame" aria-selected="false"><span>🎮</span>Gamepad</button>
+    <button role="tab" id="tabOrg" aria-selected="false"><span>⚙️</span>Home</button>
   </div>
 
-  <!-- ======================= CONTROLE ======================= -->
-  <section id="ctl" role="tabpanel" aria-labelledby="tabCtl" style="display:flex;flex-direction:column;gap:18px">
+  <!-- ======================= 1. CONTROLE PRINCIPAL ======================= -->
+  <section id="ctl" role="tabpanel" style="display:flex;flex-direction:column;gap:14px">
     <div class="voice">
       <button class="mic" id="mic" aria-label="Falar um comando">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v3"></path></svg>
       </button>
-      <div class="vtext" id="vtext"><strong>Toque e fale</strong>"abrir Netflix", "aumentar volume", "pesquisar louvor"</div>
+      <div class="vtext" id="vtext"><strong>Toque e fale</strong>"abrir Netflix", "legenda português", "séries"</div>
     </div>
     <div class="vform" id="vform" hidden>
       <input id="vz" type="text" placeholder="Toque no microfone do teclado e fale" autocomplete="off" enterkeyhint="send">
       <button class="send" id="vgo">Ir</button>
     </div>
 
+    <!-- Modo das setas direcionais (adapta para Netflix / Mouse automaticamente ou manual) -->
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Modo de Direção das Setas</span>
+        <span class="pill-tag" id="dpadModeTag">Auto</span>
+      </div>
+      <div class="mode-bar">
+        <button id="modeDpad" class="active" onclick="setDirMode('dpad')">📺 Setas TV</button>
+        <button id="modeScroll" onclick="setDirMode('scroll')">📲 Rolagem (Netflix)</button>
+        <button id="modeCursor" onclick="setDirMode('cursor')">🖱️ Direção Mouse</button>
+      </div>
+    </div>
+
+    <!-- Atalho rápido contextual quando Netflix ou Prime Video estão abertos -->
+    <div class="card" id="quickAvBanner">
+      <div class="card-head">
+        <span class="card-title">💬 Idioma e Legendas (Netflix / Prime)</span>
+        <button class="pill-tag" onclick="openAvModalAndSwitch()">Espelhar da Tela ▸</button>
+      </div>
+      <div class="grid2">
+        <button class="btn-sub" onclick="avPresetAuto('dub')">🇧🇷 Dublado (Sem Legenda)</button>
+        <button class="btn-sub" onclick="avPresetAuto('leg')">🎬 Original + Legenda PT</button>
+        <button class="btn-sub" onclick="avPresetAuto('sub_on')">💬 Ativar Legenda PT</button>
+        <button class="btn-sub" onclick="avPresetAuto('sub_off')">🚫 Desativar Legenda</button>
+      </div>
+    </div>
+
     <div class="pad">
-      <span></span><button aria-label="Cima" data-key="up" data-rep>▲</button><span></span>
-      <button aria-label="Esquerda" data-key="left" data-rep>◀</button>
-      <button class="ok" data-key="ok">OK</button>
-      <button aria-label="Direita" data-key="right" data-rep>▶</button>
-      <span></span><button aria-label="Baixo" data-key="down" data-rep>▼</button><span></span>
+      <span></span><button aria-label="Cima" data-dir="up">▲</button><span></span>
+      <button aria-label="Esquerda" data-dir="left">◀</button>
+      <button class="ok" data-dir="ok">OK<small id="okSub">Confirmar</small></button>
+      <button aria-label="Direita" data-dir="right">▶</button>
+      <span></span><button aria-label="Baixo" data-dir="down">▼</button><span></span>
     </div>
 
     <div class="grid3">
-      <button data-key="back">Voltar</button>
-      <button data-key="home">Início</button>
-      <button data-key="menu">Menu</button>
-      <button data-key="voldown" data-rep>Vol −</button>
-      <button data-key="play">Play/Pausa</button>
-      <button data-key="volup" data-rep>Vol +</button>
+      <button data-key="back">↩ Voltar</button>
+      <button data-key="home">🏠 Início</button>
+      <button data-key="menu">☰ Menu</button>
+      <button data-key="voldown" data-rep>🔉 Vol −</button>
+      <button data-key="play">⏯ Play/Pausa</button>
+      <button data-key="volup" data-rep>🔊 Vol +</button>
     </div>
 
     <div>
@@ -125,7 +222,7 @@
     </div>
 
     <div>
-      <label for="t">Digitar no projetor (busca, senha do Wi-Fi)</label>
+      <label for="t">Digitar no projetor (busca, login, senha)</label>
       <div class="row">
         <input id="t" type="text" placeholder="Escreva aqui…" autocomplete="off" enterkeyhint="send">
         <button class="send" id="send">Enviar</button>
@@ -133,13 +230,174 @@
     </div>
 
     <div>
-      <label>Abrir direto</label>
+      <label>Abrir aplicativo direto</label>
       <div class="chips" id="chips"></div>
     </div>
   </section>
 
-  <!-- ======================= ORGANIZAR ======================= -->
-  <section id="org" role="tabpanel" aria-labelledby="tabOrg" hidden style="flex-direction:column;gap:12px">
+  <!-- ======================= 2. MOUSETRACK (TOUCHPAD) ======================= -->
+  <section id="mouse" role="tabpanel" hidden style="flex-direction:column;gap:14px">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">🖱️ MouseTrack (Touchpad na Tela)</span>
+        <span class="track-pos" id="cursorCoords">640, 360</span>
+      </div>
+      <div class="track-wrap">
+        <div class="trackpad" id="trackpad">
+          <div class="track-hint">Arraste 1 dedo para mover o ponteiro no projetor<br><strong>Toque = Clique</strong> · <strong>2 dedos = Rolar</strong></div>
+          <div class="track-hint" style="color:#F2A93B">Ponteiro visível na tela do projetor</div>
+          <div class="track-ripple" id="trackRipple"></div>
+        </div>
+        <div class="vscroll" id="vscroll" title="Deslize para rolar verticalmente">
+          <span>▲</span><span>⇅</span><span>▼</span>
+        </div>
+      </div>
+      <div class="hscroll" id="hscroll">
+        <span>◀ Deslize aqui p/ rolar fileiras (Netflix)</span><span>⇄</span><span>▶</span>
+      </div>
+      <div class="grid3">
+        <button class="btn-primary" onclick="mouseOp('click')">🖱️ Clique Esq.</button>
+        <button onclick="mouseOp('longclick')">👆 Segurar</button>
+        <button onclick="mouseOp('rclick')">↩ Botão Dir.</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Direção Rápida do Mouse & Rolagem (Netflix)</span>
+        <span class="pill-tag">Catálogo Touch</span>
+      </div>
+      <p class="hint">Ideal para navegar na Netflix: rola o catálogo para cima/baixo ou move a fileira de filmes na altura do mouse.</p>
+      <div class="grid2">
+        <button class="btn-accent" onclick="mouseDir('up','scroll')">⬆ Subir Catálogo</button>
+        <button class="btn-accent" onclick="mouseDir('down','scroll')">⬇ Descer Catálogo</button>
+        <button class="btn-accent" onclick="mouseDir('left','scroll')">⬅ Voltar Fileira</button>
+        <button class="btn-accent" onclick="mouseDir('right','scroll')">➡ Avançar Fileira</button>
+      </div>
+      <div class="grid3">
+        <button onclick="centerCursor()">🎯 Centralizar</button>
+        <button onclick="cycleSensitivity()" id="sensBtn">⚡ Vel: 1.6x</button>
+        <button onclick="mouseOp('hide')">🙈 Ocultar Mouse</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 3. POR APLICATIVO (SEÇÕES + IDIOMA/LEGENDAS) ======================= -->
+  <section id="appsTab" role="tabpanel" hidden style="flex-direction:column;gap:14px">
+    <div>
+      <div class="card-head" style="margin-bottom:8px">
+        <label style="margin:0">Escolha o aplicativo para controle dedicado</label>
+        <button class="pill-tag" onclick="syncActiveApp()">🔄 App da Tela</button>
+      </div>
+      <div class="app-tabs" id="appSelector">
+        <button data-app="netflix" class="active">Netflix</button>
+        <button data-app="prime">Prime Video</button>
+        <button data-app="youtube">YouTube</button>
+        <button data-app="globoplay">Globoplay</button>
+        <button data-app="sbt">+SBT</button>
+        <button data-app="pluto">Pluto TV</button>
+        <button data-app="stremio">Stremio</button>
+        <button data-app="pendrive">Pendrive / USB</button>
+      </div>
+    </div>
+
+    <!-- Espelhamento de Idioma e Legendas (exibido para Netflix e Prime Video) -->
+    <div class="card" id="avMirrorCard">
+      <div class="card-head">
+        <span class="card-title" id="avTitle">💬 Idioma e Legendas · Espelho da Tela</span>
+        <button class="btn-primary" style="padding:5px 10px;font-size:12px;border-radius:999px" onclick="scanAv(true)">🔄 Abrir e Espelhar</button>
+      </div>
+      <p class="hint" id="avStatus">Toque em "Abrir e Espelhar" durante o filme/série para carregar as faixas disponíveis ou use os atalhos diretos:</p>
+
+      <div class="grid2" id="avQuickPresets">
+        <button class="btn-sub" onclick="avPreset('nf_dub_off')">🇧🇷 Dublado (Sem Legenda)</button>
+        <button class="btn-sub" onclick="avPreset('nf_orig_pt')">🎬 Original + Legenda PT</button>
+        <button class="btn-sub" onclick="avPreset('nf_sub_pt')">💬 Legenda Português</button>
+        <button class="btn-sub" onclick="avPreset('nf_sub_off')">🚫 Sem Legenda (Off)</button>
+      </div>
+
+      <div class="av-cols">
+        <div class="av-col">
+          <h4>🔊 Idioma (Áudio)</h4>
+          <div id="avAudioList" style="display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+        <div class="av-col">
+          <h4>💬 Legendas</h4>
+          <div id="avSubList" style="display:flex;flex-direction:column;gap:6px"></div>
+        </div>
+      </div>
+
+      <div class="grid3" id="avFooterBtns">
+        <button class="btn-primary" onclick="avPreset('nf_apply')">✅ Aplicar na Tela</button>
+        <button onclick="scanAv(false)">🔍 Ler Opções</button>
+        <button onclick="avPreset('nf_cancel')">✖ Fechar Menu</button>
+      </div>
+    </div>
+
+    <!-- Container dinâmico das seções específicas do app selecionado -->
+    <div id="appSectionsBox" style="display:flex;flex-direction:column;gap:14px"></div>
+  </section>
+
+  <!-- ======================= 4. GAMEPAD (BETA) ======================= -->
+  <section id="game" role="tabpanel" hidden style="flex-direction:column;gap:14px">
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">🎮 Controle de Videogame</span>
+        <span class="pill-tag pill-beta">BETA · Projetos Futuros</span>
+      </div>
+      <p class="hint">Envia os códigos nativos de Gamepad do Android (A, B, X, Y, L1, R1, L2, R2, Start, Select e Analógico) para emuladores, jogos Android e Netflix Games.</p>
+
+      <!-- Gatilhos L1 / L2 / R2 / R1 -->
+      <div class="gp-triggers">
+        <button data-gp="btn_l2">L2</button>
+        <button data-gp="btn_l1">L1</button>
+        <button data-gp="btn_r1">R1</button>
+        <button data-gp="btn_r2">R2</button>
+      </div>
+
+      <!-- D-Pad + Botões Y X B A -->
+      <div class="gp-body">
+        <div class="gp-dpad">
+          <span></span><button data-gp="up">▲</button><span></span>
+          <button data-gp="left">◀</button>
+          <button data-gp="btn_thumbl" style="font-size:11px;font-weight:800">L3</button>
+          <button data-gp="right">▶</button>
+          <span></span><button data-gp="down">▼</button><span></span>
+        </div>
+
+        <div class="gp-abxy">
+          <span></span><button class="btn-y" data-gp="btn_y">Y</button><span></span>
+          <button class="btn-x" data-gp="btn_x">X</button>
+          <button data-gp="btn_thumbr" style="width:40px;height:40px;font-size:11px;background:#202634">R3</button>
+          <button class="btn-b" data-gp="btn_b">B</button>
+          <span></span><button class="btn-a" data-gp="btn_a">A</button><span></span>
+        </div>
+      </div>
+
+      <!-- Analógico Virtual Touch -->
+      <div>
+        <label>Analógico Virtual (Arraste para direcionar / mover)</label>
+        <div class="gp-stick-area" id="gpStickArea">
+          <div class="gp-stick-knob" id="gpStickKnob">STICK</div>
+        </div>
+      </div>
+
+      <!-- Select / Mode / Start -->
+      <div class="gp-center">
+        <button data-gp="btn_select">SELECT</button>
+        <button data-gp="btn_mode">🕹️ MODO</button>
+        <button data-gp="btn_start">START</button>
+      </div>
+
+      <div class="grid2">
+        <button onclick="toggleStickMode()" id="stickModeBtn">🕹️ Analógico: Setas Jogo</button>
+        <button onclick="toggleTurbo()" id="turboBtn">⚡ Turbo: Desligado</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================= 5. ORGANIZAR HOME ======================= -->
+  <section id="org" role="tabpanel" hidden style="flex-direction:column;gap:12px">
     <p class="hint">Segure o <strong>≡</strong> e arraste para mudar a ordem. A home do projetor muda na hora.</p>
     <ul class="list" id="homeList"></ul>
     <h2 id="othersTitle">Adicionar à home</h2>
@@ -153,31 +411,94 @@
 /* ---------- utilidades ---------- */
 const $ = (id) => document.getElementById(id);
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
-const vib = () => { try { navigator.vibrate && navigator.vibrate(12) } catch (e) {} };
-const toast = (t) => { const m = $('toast'); m.textContent = t; m.classList.add('show'); clearTimeout(toast.h); toast.h = setTimeout(() => m.classList.remove('show'), 2600); };
-const call = (url) => fetch(url, { cache: 'no-store' })
+const vib = (ms = 12) => { try { navigator.vibrate && navigator.vibrate(ms) } catch (e) {} };
+const toast = (t) => {
+  const m = $('toast'); m.textContent = t; m.classList.add('show');
+  clearTimeout(toast.h); toast.h = setTimeout(() => m.classList.remove('show'), 2400);
+};
+const call = (url) => fetch(url, { cache: 'no-store', keepalive: true })
   .then(r => r.ok ? r.text() : r.text().then(t => { toast(t); throw 0; }))
   .catch((e) => { if (e !== 0) toast('Sem conexão com o projetor'); throw e; });
 const key = (k) => call('/key?c=' + k).catch(() => {});
 const keys = async (k, n) => { for (let i = 0; i < n; i++) { key(k); await sleep(140); } };
-const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '')
+const norm = (s) => s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
   .replace(/[^a-z0-9+\s]/g, ' ').replace(/\s+/g, ' ').trim();
 
-/* ---------- abas ---------- */
-const tabs = { ctl: $('tabCtl'), org: $('tabOrg') };
-function show(which) {
-  for (const k in tabs) {
+/* ---------- estado global ---------- */
+let currentActiveApp = 'launcher';
+let selectedAppTab = 'netflix';
+let dirMode = 'dpad'; // 'dpad' | 'scroll' | 'cursor'
+let manualDirOverride = false;
+let mouseSens = 1.6;
+let stickMode = 'dpad'; // 'dpad' | 'mouse'
+let turboOn = false;
+
+const APP_NAMES = {
+  launcher: 'Tela inicial',
+  netflix: 'Netflix',
+  prime: 'Prime Video',
+  youtube: 'YouTube',
+  globoplay: 'Globoplay',
+  sbt: '+SBT',
+  pluto: 'Pluto TV',
+  stremio: 'Stremio',
+  pendrive: 'Pendrive / USB',
+  outro: 'Aplicativo'
+};
+
+/* ---------- abas principais ---------- */
+const tabMap = {
+  ctl: $('tabCtl'),
+  mouse: $('tabMouse'),
+  appsTab: $('tabApps'),
+  game: $('tabGame'),
+  org: $('tabOrg')
+};
+function showTab(which) {
+  for (const k in tabMap) {
     const on = k === which;
-    tabs[k].setAttribute('aria-selected', on);
+    tabMap[k].setAttribute('aria-selected', on);
     $(k).hidden = !on;
     if (on) $(k).style.display = 'flex';
   }
   if (which === 'org') loadApps();
+  if (which === 'appsTab') renderAppGuide(selectedAppTab);
 }
-tabs.ctl.onclick = () => show('ctl');
-tabs.org.onclick = () => show('org');
+Object.keys(tabMap).forEach(k => { tabMap[k].onclick = () => { vib(); showTab(k); }; });
 
-/* ---------- teclas ---------- */
+/* ---------- modo das setas direcionais (Netflix / Mouse / TV) ---------- */
+function setDirMode(m, isAuto = false) {
+  dirMode = m;
+  if (!isAuto) manualDirOverride = true;
+  $('modeDpad').classList.toggle('active', m === 'dpad');
+  $('modeScroll').classList.toggle('active', m === 'scroll');
+  $('modeCursor').classList.toggle('active', m === 'cursor');
+  $('dpadModeTag').textContent = isAuto ? 'Auto (' + (m === 'scroll' ? 'Netflix' : 'TV') + ')' : 'Manual';
+  $('okSub').textContent = (m === 'dpad') ? 'Confirmar' : 'Clique Mouse';
+}
+
+function handleDirPress(d) {
+  vib();
+  if (dirMode === 'dpad') {
+    key(d);
+  } else {
+    mouseDir(d, dirMode);
+  }
+}
+
+document.querySelectorAll('[data-dir]').forEach(b => {
+  const d = b.dataset.dir;
+  let rep = null, delay = null;
+  const fire = () => handleDirPress(d);
+  const stop = () => { clearTimeout(delay); clearInterval(rep); delay = rep = null; };
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault(); fire();
+    if (d !== 'ok') delay = setTimeout(() => { rep = setInterval(fire, 180); }, 380);
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
+});
+
+/* ---------- teclas comuns ---------- */
 document.querySelectorAll('[data-key]').forEach(b => {
   const k = b.dataset.key;
   let rep = null, delay = null;
@@ -199,12 +520,626 @@ document.querySelectorAll('[data-tool]').forEach(b => {
   };
 });
 
+/* ---------- MouseTrack (Touchpad + Scroll) ---------- */
+function mouseOp(op, extra = '') {
+  vib();
+  return fetch('/mouse?op=' + op + extra, { cache: 'no-store', keepalive: true })
+    .then(r => r.json().catch(() => null))
+    .then(d => { if (d && d.x !== undefined) $('cursorCoords').textContent = d.x + ', ' + d.y; })
+    .catch(() => {});
+}
+function mouseDir(d, mode) {
+  vib();
+  fetch('/mouse?op=dir&d=' + d + '&mode=' + (mode || 'scroll'), { cache: 'no-store', keepalive: true })
+    .then(r => r.json().catch(() => null))
+    .then(res => { if (res && res.x !== undefined) $('cursorCoords').textContent = res.x + ', ' + res.y; })
+    .catch(() => {});
+}
+function centerCursor() {
+  mouseOp('set', '&x=640&y=360');
+  toast('Ponteiro centralizado (640, 360)');
+}
+function cycleSensitivity() {
+  mouseSens = mouseSens === 1.0 ? 1.6 : (mouseSens === 1.6 ? 2.4 : 1.0);
+  $('sensBtn').textContent = '⚡ Vel: ' + mouseSens.toFixed(1) + 'x';
+  vib();
+}
+
+(function initTrackpad() {
+  const pad = $('trackpad');
+  const ripple = $('trackRipple');
+  let activePointers = new Map();
+  let lastX = 0, lastY = 0;
+  let startX = 0, startY = 0, startTime = 0;
+  let moved = false;
+  let accDx = 0, accDy = 0, flushTimer = null;
+  let scrollAccX = 0, scrollAccY = 0;
+
+  function flushMove() {
+    flushTimer = null;
+    if (Math.abs(accDx) < 0.5 && Math.abs(accDy) < 0.5) return;
+    const dx = accDx.toFixed(1), dy = accDy.toFixed(1);
+    accDx = 0; accDy = 0;
+    fetch('/mouse?op=move&dx=' + dx + '&dy=' + dy, { cache: 'no-store', keepalive: true })
+      .then(r => r.json().catch(() => null))
+      .then(d => { if (d && d.x !== undefined) $('cursorCoords').textContent = d.x + ', ' + d.y; })
+      .catch(() => {});
+  }
+
+  pad.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    pad.setPointerCapture(e.pointerId);
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    pad.classList.add('touching');
+    if (activePointers.size === 1) {
+      lastX = startX = e.clientX;
+      lastY = startY = e.clientY;
+      startTime = Date.now();
+      moved = false;
+    }
+  });
+
+  pad.addEventListener('pointermove', e => {
+    if (!activePointers.has(e.pointerId)) return;
+    const prev = activePointers.get(e.pointerId);
+    const rawDx = e.clientX - prev.x;
+    const rawDy = e.clientY - prev.y;
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+    if (Math.hypot(e.clientX - startX, e.clientY - startY) > 7) moved = true;
+
+    if (activePointers.size >= 2) {
+      // Gestos com 2 dedos = Rolagem na tela
+      scrollAccX += rawDx * 1.4;
+      scrollAccY += rawDy * 1.4;
+      if (Math.abs(scrollAccY) > 70 || Math.abs(scrollAccX) > 70) {
+        const sx = Math.round(scrollAccX * 2.2);
+        const sy = Math.round(scrollAccY * 2.2);
+        scrollAccX = 0; scrollAccY = 0;
+        fetch('/mouse?op=scroll&dx=' + sx + '&dy=' + sy, { cache: 'no-store', keepalive: true }).catch(() => {});
+      }
+      return;
+    }
+
+    const boost = Math.min(2.3, Math.max(1.0, Math.hypot(rawDx, rawDy) * 0.14));
+    accDx += rawDx * mouseSens * boost;
+    accDy += rawDy * mouseSens * boost;
+    if (!flushTimer) flushTimer = setTimeout(flushMove, 26);
+  });
+
+  function onEnd(e) {
+    activePointers.delete(e.pointerId);
+    if (activePointers.size === 0) {
+      pad.classList.remove('touching');
+      const dt = Date.now() - startTime;
+      if (!moved && dt < 280) {
+        const r = pad.getBoundingClientRect();
+        ripple.style.left = (e.clientX - r.left) + 'px';
+        ripple.style.top = (e.clientY - r.top) + 'px';
+        ripple.classList.add('on');
+        setTimeout(() => ripple.classList.remove('on'), 200);
+        mouseOp('click');
+      } else if (!moved && dt >= 520) {
+        mouseOp('longclick');
+      }
+    }
+  }
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => pad.addEventListener(ev, onEnd));
+
+  // Barras dedicadas de rolagem vertical (⇅) e horizontal (⇄)
+  function bindScrollStrip(el, vertical) {
+    let sy = 0, sx = 0, down = false;
+    el.addEventListener('pointerdown', e => {
+      e.preventDefault(); el.setPointerCapture(e.pointerId);
+      down = true; sx = e.clientX; sy = e.clientY; vib(8);
+    });
+    el.addEventListener('pointermove', e => {
+      if (!down) return;
+      const dx = e.clientX - sx, dy = e.clientY - sy;
+      if (vertical && Math.abs(dy) > 38) {
+        sy = e.clientY;
+        const stepY = dy > 0 ? 280 : -280;
+        vib(6);
+        fetch('/mouse?op=scroll&dx=0&dy=' + stepY, { cache: 'no-store', keepalive: true }).catch(() => {});
+      } else if (!vertical && Math.abs(dx) > 38) {
+        sx = e.clientX;
+        const stepX = dx > 0 ? 360 : -360;
+        vib(6);
+        fetch('/mouse?op=scroll&dx=' + stepX + '&dy=0', { cache: 'no-store', keepalive: true }).catch(() => {});
+      }
+    });
+    ['pointerup', 'pointercancel'].forEach(ev => el.addEventListener(ev, () => { down = false; }));
+  }
+  bindScrollStrip($('vscroll'), true);
+  bindScrollStrip($('hscroll'), false);
+})();
+
+/* ---------- Idioma e Legendas (Netflix & Prime Video) ---------- */
+function avPreset(p) {
+  vib(15);
+  call('/av?op=preset&p=' + encodeURIComponent(p))
+    .then(() => toast('Ajuste de áudio/legenda enviado'))
+    .catch(() => {});
+}
+
+function avPresetAuto(kind) {
+  const isPrime = (currentActiveApp === 'prime' || (currentActiveApp !== 'netflix' && selectedAppTab === 'prime'));
+  if (isPrime) {
+    if (kind === 'dub') avPreset('pv_audio_pt');
+    else if (kind === 'leg') avPreset('pv_sub_pt');
+    else if (kind === 'sub_on') avPreset('pv_sub_pt');
+    else if (kind === 'sub_off') avPreset('pv_sub_off');
+  } else {
+    if (kind === 'dub') avPreset('nf_dub_off');
+    else if (kind === 'leg') avPreset('nf_orig_pt');
+    else if (kind === 'sub_on') avPreset('nf_sub_pt');
+    else if (kind === 'sub_off') avPreset('nf_sub_off');
+  }
+}
+
+function openAvModalAndSwitch() {
+  if (currentActiveApp === 'prime' || currentActiveApp === 'netflix') {
+    selectedAppTab = currentActiveApp;
+  }
+  showTab('appsTab');
+  scanAv(true);
+}
+
+async function scanAv(openFirst) {
+  vib(15);
+  const app = (selectedAppTab === 'prime' || selectedAppTab === 'netflix') ? selectedAppTab : 'netflix';
+  $('avStatus').textContent = openFirst
+    ? 'Abrindo menu de Áudio e Legendas na tela e lendo opções…'
+    : 'Lendo opções da tela…';
+  try {
+    const res = await fetch('/av?op=scan&app=' + app + '&open=' + (openFirst ? '1' : '0'), { cache: 'no-store' }).then(r => r.json());
+    renderAvTracks(res);
+    toast(res.live ? 'Opções da tela espelhadas!' : 'Atalhos mapeados prontos');
+  } catch (e) {
+    $('avStatus').textContent = 'Use os botões rápidos abaixo para alternar idioma e legenda:';
+  }
+}
+
+function renderAvTracks(data) {
+  const aBox = $('avAudioList'), sBox = $('avSubList');
+  aBox.textContent = ''; sBox.textContent = '';
+  const isPrime = data.app === 'prime';
+  $('avTitle').textContent = isPrime
+    ? '💬 Idioma e Legendas · Prime Video'
+    : '💬 Idioma e Legendas · Netflix';
+  $('avStatus').textContent = data.live
+    ? 'Opções espelhadas do vídeo em reprodução (toque para ativar):'
+    : 'Atalhos mapeados da tela do player (toque para selecionar e aplicar):';
+
+  (data.audio || []).forEach(t => {
+    const b = document.createElement('button');
+    if (t.selected) b.className = 'btn-active';
+    b.innerHTML = '<span>' + t.label + '</span><span>' + (t.selected ? '✓' : '') + '</span>';
+    b.onclick = () => {
+      vib(15);
+      if (t.cmd) call('/av?op=pick&cmd=' + encodeURIComponent(t.cmd)).then(() => toast('Áudio: ' + t.label));
+      else call('/av?op=pick&apply=1&x=' + t.x + '&y=' + t.y).then(() => { toast('Áudio: ' + t.label); setTimeout(() => scanAv(false), 600); });
+    };
+    aBox.appendChild(b);
+  });
+
+  (data.subtitles || []).forEach(t => {
+    const b = document.createElement('button');
+    if (t.selected) b.className = 'btn-active';
+    b.innerHTML = '<span>' + t.label + '</span><span>' + (t.selected ? '✓' : '') + '</span>';
+    b.onclick = () => {
+      vib(15);
+      if (t.cmd) call('/av?op=pick&cmd=' + encodeURIComponent(t.cmd)).then(() => toast('Legenda: ' + t.label));
+      else call('/av?op=pick&apply=1&x=' + t.x + '&y=' + t.y).then(() => { toast('Legenda: ' + t.label); setTimeout(() => scanAv(false), 600); });
+    };
+    sBox.appendChild(b);
+  });
+}
+
+/* ---------- Guias de Navegação Rápida por Aplicativo ---------- */
+const APP_GUIDES = {
+  netflix: {
+    title: 'Netflix · Navegação Rápida Mapeada',
+    hasAv: true,
+    groups: [
+      {
+        name: 'Seções Diretas da Netflix',
+        cols: 2,
+        items: [
+          { label: '🏠 Início', sec: 'home' },
+          { label: '📺 Séries', sec: 'series' },
+          { label: '🎬 Filmes', sec: 'movies' },
+          { label: '🗂️ Categorias', sec: 'categories' },
+          { label: '🔥 Bombando', sec: 'newhot' },
+          { label: '⭐ Minha Netflix', sec: 'mynf' },
+          { label: '🔍 Buscar (Lupa)', sec: 'search' },
+          { label: '👤 Trocar Perfil', sec: 'profiles' }
+        ]
+      },
+      {
+        name: 'Rolagem do Catálogo (Direção do Mouse)',
+        cols: 2,
+        items: [
+          { label: '⬆ Subir Catálogo', custom: () => mouseDir('up', 'scroll') },
+          { label: '⬇ Descer Catálogo', custom: () => mouseDir('down', 'scroll') },
+          { label: '⬅ Fileira p/ Esquerda', custom: () => mouseDir('left', 'scroll') },
+          { label: '➡ Fileira p/ Direita', custom: () => mouseDir('right', 'scroll') }
+        ]
+      },
+      {
+        name: 'Reprodução e Episódios',
+        cols: 3,
+        items: [
+          { label: '▶ Play Destaque', sec: 'play_hero' },
+          { label: '⏭ Pular Abertura', sec: 'skip_intro' },
+          { label: '⏭ Próximo Ep.', sec: 'next_ep' },
+          { label: '⏪ -10 seg', sec: 'rew10' },
+          { label: '⏯ Play/Pausa', sec: 'playpause_nf' },
+          { label: '⏩ +10 seg', sec: 'ff10' },
+          { label: '📋 Episódios', sec: 'episodes' },
+          { label: '➕ Minha Lista', sec: 'mylist_hero' },
+          { label: '💬 Áudio/Legenda', custom: () => scanAv(true) }
+        ]
+      },
+      {
+        name: 'Entrar Direto no Perfil ("Quem está assistindo?")',
+        cols: 3,
+        items: [
+          { label: '👤 Walyson', sec: 'prof_walyson' },
+          { label: '👤 Lala', sec: 'prof_lala' },
+          { label: '👤 Micaíla', sec: 'prof_micaila' },
+          { label: '👤 Geral', sec: 'prof_geral' },
+          { label: '🧸 Kids', sec: 'prof_kids' }
+        ]
+      }
+    ]
+  },
+  prime: {
+    title: 'Prime Video · Navegação Rápida Mapeada',
+    hasAv: true,
+    groups: [
+      {
+        name: 'Seções Principais do Prime Video',
+        cols: 2,
+        items: [
+          { label: '🏠 Página Inicial', sec: 'home' },
+          { label: '🎬 Filmes', sec: 'movies' },
+          { label: '📺 Séries', sec: 'series' },
+          { label: '⚽ Esportes Ao Vivo', sec: 'sports' },
+          { label: '📡 TV ao Vivo', sec: 'livetv' },
+          { label: '👑 Incluído no Prime', sec: 'prime_included' },
+          { label: '📦 Assinaturas', sec: 'subscriptions' },
+          { label: '🔍 Buscar', sec: 'search' },
+          { label: '🗂️ Categorias', sec: 'categories' },
+          { label: '🔖 Minha Área / Lista', sec: 'mystuff' }
+        ]
+      },
+      {
+        name: 'Player e Perfis Prime Video',
+        cols: 3,
+        items: [
+          { label: '💬 Legendas/Áudio', custom: () => avPreset('pv_open') },
+          { label: '☰ Menu Lateral', sec: 'sidebar' },
+          { label: '⏯ Play/Pausa', custom: () => key('play') },
+          { label: '👤 Walyson', sec: 'prof_walyson' },
+          { label: '👤 Lays', sec: 'prof_lays' },
+          { label: '🧸 Kids', sec: 'prof_kids' }
+        ]
+      }
+    ]
+  },
+  youtube: {
+    title: 'YouTube · Navegação Rápida',
+    hasAv: false,
+    groups: [
+      {
+        name: 'Seções do YouTube',
+        cols: 2,
+        items: [
+          { label: '🔍 Buscar Vídeo', sec: 'search' },
+          { label: '🏠 Início', sec: 'home' },
+          { label: '📺 Inscrições', sec: 'subs' },
+          { label: '📚 Biblioteca / Histórico', sec: 'library' },
+          { label: '☰ Abrir Menu Lateral', sec: 'sidebar' },
+          { label: '⏭ Pular Anúncio', sec: 'skip_ad' }
+        ]
+      },
+      {
+        name: 'Controle do Vídeo',
+        cols: 3,
+        items: [
+          { label: '⏪ -10s', sec: 'rew10' },
+          { label: '⏯ Play/Pausa', custom: () => key('play') },
+          { label: '⏩ +10s', sec: 'ff10' },
+          { label: '💬 Legendas (CC)', sec: 'cc' },
+          { label: '⬆ Vídeo Anterior', custom: () => key('prev') },
+          { label: '⬇ Próximo Vídeo', custom: () => key('next') }
+        ]
+      }
+    ]
+  },
+  globoplay: {
+    title: 'Globoplay · Navegação Rápida',
+    hasAv: false,
+    groups: [
+      {
+        name: 'Seções do Globoplay',
+        cols: 2,
+        items: [
+          { label: '📡 TV Globo Ao Vivo', sec: 'live' },
+          { label: '🏠 Início', sec: 'home' },
+          { label: '🎭 Novelas', sec: 'novelas' },
+          { label: '📺 Séries', sec: 'series' },
+          { label: '🎬 Filmes', sec: 'movies' },
+          { label: '🔍 Buscar', sec: 'search' },
+          { label: '☰ Menu Lateral', sec: 'sidebar' },
+          { label: '💬 Áudio e Legendas', sec: 'av_menu' }
+        ]
+      }
+    ]
+  },
+  sbt: {
+    title: '+SBT · Navegação Rápida',
+    hasAv: false,
+    groups: [
+      {
+        name: 'Seções do +SBT',
+        cols: 2,
+        items: [
+          { label: '📡 SBT Ao Vivo', sec: 'live' },
+          { label: '📺 Canais +SBT Ao Vivo', sec: 'channels' },
+          { label: '🎭 Novelas e Programas', sec: 'catalog' },
+          { label: '☰ Menu Lateral', sec: 'menu' },
+          { label: '🔍 Buscar', sec: 'search' },
+          { label: '↩ Mostrar Interface', sec: 'back_ui' }
+        ]
+      }
+    ]
+  },
+  pluto: {
+    title: 'Pluto TV · Guia de Canais e Filmes',
+    hasAv: false,
+    groups: [
+      {
+        name: 'Canais e Seções da Pluto TV',
+        cols: 2,
+        items: [
+          { label: '⬆ Canal +', sec: 'chup' },
+          { label: '⬇ Canal −', sec: 'chdown' },
+          { label: '📋 Guia de Canais (EPG)', sec: 'guide' },
+          { label: '📡 TV Ao Vivo', sec: 'livetv' },
+          { label: '🎬 Sob Demanda (Filmes)', sec: 'ondemand' },
+          { label: '💬 Áudio / Legendas', sec: 'av_menu' }
+        ]
+      }
+    ]
+  },
+  stremio: {
+    title: 'Stremio · Filmes, Séries e Add-ons',
+    hasAv: false,
+    groups: [
+      {
+        name: 'Seções do Stremio',
+        cols: 2,
+        items: [
+          { label: '🏠 Início (Board)', sec: 'board' },
+          { label: '🧭 Descobrir (Catálogo)', sec: 'discover' },
+          { label: '📚 Minha Biblioteca', sec: 'library' },
+          { label: '🧩 Add-ons', sec: 'addons' },
+          { label: '🔍 Buscar Filme/Série', sec: 'search' },
+          { label: '☰ Menu Lateral', sec: 'sidebar' },
+          { label: '💬 Menu de Legendas', sec: 'subs' },
+          { label: '🔊 Faixa de Áudio', sec: 'audio' }
+        ]
+      }
+    ]
+  },
+  pendrive: {
+    title: 'Pendrive / USB · Leitor de Vídeos com Legendas',
+    hasAv: false,
+    groups: [
+      {
+        name: 'Pastas e Reprodutores USB',
+        cols: 2,
+        items: [
+          { label: '💾 Pastas do Pendrive', sec: 'folders' },
+          { label: '🎬 Biblioteca de Filmes', sec: 'movies' },
+          { label: '▶ Abrir Nova Player', sec: 'novaplayer' },
+          { label: '▶ Abrir Just Player', sec: 'justplayer' },
+          { label: '💬 Selecionar Legenda (.srt)', sec: 'subs' },
+          { label: '🔊 Trocar Áudio (Dual)', sec: 'audio' },
+          { label: '📐 Proporção / Zoom', sec: 'aspect' },
+          { label: '⏯ Play / Pausa', custom: () => key('play') }
+        ]
+      }
+    ]
+  }
+};
+
+function renderAppGuide(appId) {
+  selectedAppTab = appId;
+  document.querySelectorAll('#appSelector button').forEach(b => {
+    b.classList.toggle('active', b.dataset.app === appId);
+  });
+
+  const guide = APP_GUIDES[appId] || APP_GUIDES.netflix;
+  $('avMirrorCard').hidden = !guide.hasAv;
+  if (guide.hasAv) {
+    if (appId === 'prime') {
+      $('avQuickPresets').innerHTML = `
+        <button class="btn-sub" onclick="avPreset('pv_audio_pt')">🇧🇷 Áudio Português</button>
+        <button class="btn-sub" onclick="avPreset('pv_audio_orig')">🎬 Áudio Original</button>
+        <button class="btn-sub" onclick="avPreset('pv_sub_pt')">💬 Legenda Português</button>
+        <button class="btn-sub" onclick="avPreset('pv_sub_off')">🚫 Desativar Legenda</button>
+      `;
+      $('avFooterBtns').innerHTML = `
+        <button class="btn-primary" onclick="avPreset('pv_open')">💬 Abrir Menu Player</button>
+        <button onclick="avPreset('pv_tab_sub')">◀ Aba Legendas</button>
+        <button onclick="avPreset('pv_tab_audio')">▶ Aba Áudio</button>
+      `;
+      renderAvTracks({
+        app: 'prime', live: true,
+        audio: [
+          { label: 'Português (Brasil)', cmd: 'pv_audio_pt', selected: true },
+          { label: 'Idioma Original', cmd: 'pv_audio_orig', selected: false },
+          { label: 'Próxima Faixa ▼', cmd: 'pv_audio_next', selected: false }
+        ],
+        subtitles: [
+          { label: 'Desativadas (Off)', cmd: 'pv_sub_off', selected: false },
+          { label: 'Português (Brasil)', cmd: 'pv_sub_pt', selected: true },
+          { label: 'Próxima Legenda ▼', cmd: 'pv_sub_next', selected: false }
+        ]
+      });
+    } else {
+      $('avQuickPresets').innerHTML = `
+        <button class="btn-sub" onclick="avPreset('nf_dub_off')">🇧🇷 Dublado (Sem Legenda)</button>
+        <button class="btn-sub" onclick="avPreset('nf_orig_pt')">🎬 Original + Legenda PT</button>
+        <button class="btn-sub" onclick="avPreset('nf_sub_pt')">💬 Legenda Português</button>
+        <button class="btn-sub" onclick="avPreset('nf_sub_off')">🚫 Sem Legenda (Off)</button>
+      `;
+      $('avFooterBtns').innerHTML = `
+        <button class="btn-primary" onclick="avPreset('nf_apply')">✅ Aplicar na Tela</button>
+        <button onclick="scanAv(false)">🔍 Ler Opções</button>
+        <button onclick="avPreset('nf_cancel')">✖ Fechar Menu</button>
+      `;
+      renderAvTracks({
+        app: 'netflix', live: false,
+        audio: [
+          { label: 'Português (Brasil) [Faixa 1]', x: 357, y: 109, selected: true },
+          { label: 'Idioma Original [Faixa 2]', x: 357, y: 178, selected: false },
+          { label: 'Faixa de Áudio 3', x: 357, y: 247, selected: false }
+        ],
+        subtitles: [
+          { label: 'Desativada (Off)', x: 923, y: 109, selected: true },
+          { label: 'Português (Brasil)', x: 923, y: 178, selected: false },
+          { label: 'Legenda 3 (Outra)', x: 923, y: 247, selected: false }
+        ]
+      });
+    }
+  }
+
+  const box = $('appSectionsBox');
+  box.textContent = '';
+
+  // Cabeçalho para abrir o app caso ainda não esteja aberto
+  const openCard = document.createElement('div');
+  openCard.className = 'card';
+  openCard.innerHTML = `<div class="card-head"><span class="card-title">${guide.title}</span><button class="btn-primary" style="padding:6px 12px;font-size:12px;border-radius:999px" id="openSelectedAppBtn">🚀 Abrir ${APP_NAMES[appId] || appId}</button></div>`;
+  openCard.querySelector('#openSelectedAppBtn').onclick = () => {
+    vib();
+    call('/launch?app=' + encodeURIComponent(appId)).then(() => toast('Abrindo ' + (APP_NAMES[appId] || appId))).catch(() => {});
+  };
+  box.appendChild(openCard);
+
+  guide.groups.forEach(g => {
+    const c = document.createElement('div');
+    c.className = 'card';
+    const h = document.createElement('div');
+    h.className = 'card-head';
+    h.innerHTML = `<span class="card-title">${g.name}</span>`;
+    c.appendChild(h);
+
+    const grid = document.createElement('div');
+    grid.className = g.cols === 3 ? 'grid3' : 'grid2';
+    g.items.forEach(it => {
+      const b = document.createElement('button');
+      b.textContent = it.label;
+      b.onclick = () => {
+        vib(12);
+        if (it.custom) it.custom();
+        else call('/nav?app=' + appId + '&sec=' + it.sec).then(() => toast(it.label)).catch(() => {});
+      };
+      grid.appendChild(b);
+    });
+    c.appendChild(grid);
+    box.appendChild(c);
+  });
+}
+
+document.querySelectorAll('#appSelector button').forEach(b => {
+  b.onclick = () => { vib(); renderAppGuide(b.dataset.app); };
+});
+
+function syncActiveApp() {
+  vib();
+  if (APP_GUIDES[currentActiveApp]) {
+    renderAppGuide(currentActiveApp);
+    toast('Sincronizado com ' + APP_NAMES[currentActiveApp]);
+  } else {
+    toast('Na tela: ' + (APP_NAMES[currentActiveApp] || 'Tela inicial'));
+  }
+}
+
+/* ---------- Controle de Videogame (Beta) ---------- */
+document.querySelectorAll('[data-gp]').forEach(b => {
+  const k = b.dataset.gp;
+  let rep = null;
+  const fire = () => { vib(10); key(k); };
+  const stop = () => { clearInterval(rep); rep = null; };
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault(); fire();
+    if (turboOn || ['up','down','left','right'].includes(k)) {
+      rep = setInterval(fire, turboOn ? 110 : 170);
+    }
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
+});
+
+function toggleStickMode() {
+  stickMode = stickMode === 'dpad' ? 'mouse' : 'dpad';
+  $('stickModeBtn').textContent = stickMode === 'dpad' ? '🕹️ Analógico: Setas Jogo' : '🕹️ Analógico: MouseTrack';
+  vib();
+}
+function toggleTurbo() {
+  turboOn = !turboOn;
+  $('turboBtn').textContent = turboOn ? '⚡ Turbo: LIGADO' : '⚡ Turbo: Desligado';
+  $('turboBtn').classList.toggle('btn-active', turboOn);
+  vib();
+}
+
+(function initGamepadStick() {
+  const area = $('gpStickArea'), knob = $('gpStickKnob');
+  let down = false, cx = 0, cy = 0, timer = null, dx = 0, dy = 0;
+
+  function stepStick() {
+    if (!down) return;
+    if (stickMode === 'mouse') {
+      if (Math.hypot(dx, dy) > 8) {
+        fetch('/mouse?op=move&dx=' + (dx * 0.45).toFixed(1) + '&dy=' + (dy * 0.45).toFixed(1), { cache: 'no-store', keepalive: true }).catch(() => {});
+      }
+    } else {
+      if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 18) key(dx > 0 ? 'right' : 'left');
+      else if (Math.abs(dy) > 18) key(dy > 0 ? 'down' : 'up');
+    }
+  }
+
+  area.addEventListener('pointerdown', e => {
+    e.preventDefault(); area.setPointerCapture(e.pointerId);
+    const r = area.getBoundingClientRect();
+    cx = r.left + r.width / 2; cy = r.top + r.height / 2;
+    down = true; dx = 0; dy = 0; vib(10);
+    timer = setInterval(stepStick, stickMode === 'mouse' ? 40 : 190);
+  });
+  area.addEventListener('pointermove', e => {
+    if (!down) return;
+    dx = Math.max(-48, Math.min(48, e.clientX - cx));
+    dy = Math.max(-36, Math.min(36, e.clientY - cy));
+    knob.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+  const reset = () => {
+    down = false; dx = 0; dy = 0;
+    clearInterval(timer); timer = null;
+    knob.style.transform = 'translate(0,0)';
+  };
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => area.addEventListener(ev, reset));
+})();
+
+/* ---------- texto & apps da home ---------- */
 const t = $('t');
 const sendText = () => { if (!t.value) return; call('/text?t=' + encodeURIComponent(t.value)).catch(() => {}); t.value = ''; };
 $('send').onclick = sendText;
 t.addEventListener('keydown', e => { if (e.key === 'Enter') sendText(); });
 
-/* ---------- apps (home + outros) ---------- */
 let apps = { max: 12, home: [], others: [] };
 const appKey = (s) => norm(s).replace(/\b(mais|plus|tv|app|aplicativo|o|a)\b/g, '').replace(/[^a-z0-9]/g, '');
 function findApp(spoken) {
@@ -234,8 +1169,8 @@ async function loadApps() {
   } catch (e) {}
 }
 
-/* ---------- organizar (arrastar) ---------- */
-const handleSvg = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>';
+/* ---------- organizar home ---------- */
+const handleSvg = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>';
 
 function renderOrg() {
   const list = $('homeList'); list.textContent = '';
@@ -279,8 +1214,7 @@ function enableDrag(li) {
   const h = li.querySelector('.handle');
   let dragging = false, startOrder = '';
   h.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    h.setPointerCapture(e.pointerId);
+    e.preventDefault(); h.setPointerCapture(e.pointerId);
     dragging = true; startOrder = currentIds().join(',');
     li.classList.add('drag'); vib();
   });
@@ -294,7 +1228,6 @@ function enableDrag(li) {
       if (y < r.top + r.height / 2) { before = it; break; }
     }
     if (before !== li.nextSibling) { list.insertBefore(li, before); numberRows(); vib(); }
-    // rola a página se arrastar perto da borda
     if (y < 60) window.scrollBy(0, -12); else if (y > innerHeight - 60) window.scrollBy(0, 12);
   });
   const end = () => {
@@ -308,7 +1241,7 @@ function enableDrag(li) {
 
 $('reset').onclick = () => call('/order?reset=1').then(() => { toast('Ordem padrão'); loadApps(); }).catch(() => {});
 
-/* ---------- voz ---------- */
+/* ---------- voz inteligente ---------- */
 const NUM = { um: 1, uma: 1, dois: 2, duas: 2, tres: 3, quatro: 4, cinco: 5, seis: 6, sete: 7, oito: 8, nove: 9, dez: 10 };
 function count(s, def) {
   const m = s.match(/\b(\d+|um|uma|dois|duas|tres|quatro|cinco|seis|sete|oito|nove|dez)\b/);
@@ -318,7 +1251,6 @@ function count(s, def) {
 }
 const afterFirstWord = (raw) => raw.trim().replace(/^\S+\s+(por\s+|o\s+|a\s+)?/i, '');
 
-// Devolve a descrição do que foi feito, ou null se não entendeu.
 function interpret(raw) {
   const s = norm(raw);
   if (!s) return null;
@@ -334,21 +1266,37 @@ function interpret(raw) {
     call('/text?t=' + encodeURIComponent(q)).catch(() => {});
     return 'Digitando "' + q + '"';
   }
+  // Comandos de idioma e legenda por voz
+  if (/\b(dublado|audio portugues|em portugues)\b/.test(s)) {
+    avPresetAuto('dub'); return 'Ativando Áudio Dublado (PT-BR)';
+  }
+  if (/\b(legendado|idioma original|audio original)\b/.test(s)) {
+    avPresetAuto('leg'); return 'Ativando Áudio Original + Legenda PT-BR';
+  }
+  if (/\b(sem legenda|desativar legenda|tirar legenda|desligar legenda)\b/.test(s)) {
+    avPresetAuto('sub_off'); return 'Desativando Legendas';
+  }
+  if (/\b(legenda|legendas|idioma)\b/.test(s)) {
+    avPresetAuto('sub_on'); return 'Ativando Legenda em Português';
+  }
+  if (/\b(pular abertura|pular intro)\b/.test(s)) {
+    call('/nav?app=netflix&sec=skip_intro').catch(() => {}); return 'Pulando abertura';
+  }
+  if (/\b(proximo episodio)\b/.test(s)) {
+    call('/nav?app=netflix&sec=next_ep').catch(() => {}); return 'Próximo episódio';
+  }
   if (/\b(foco)\b/.test(s)) {
-    if (/(menos|diminu|abaix| tras|perto)/.test(s)) { keys('focusdown', count(s, 3)); return 'Foco −'; }
+    if (/(menos|diminu|abaix|tras|perto)/.test(s)) { keys('focusdown', count(s, 3)); return 'Foco −'; }
     keys('focusup', count(s, 3)); return 'Foco +';
   }
   if (/\b(4 cantos|quatro cantos)\b/.test(s)) {
-    call('/launch?app=4cantos').catch(() => {});
-    return 'Abrindo Trapézio 4 Cantos';
+    call('/launch?app=4cantos').catch(() => {}); return 'Abrindo Trapézio 4 Cantos';
   }
   if (/\b(trapezio|projeccao|projecao|enquadramento|ajuste de imagem|alinhar tela)\b/.test(s)) {
-    call('/launch?app=trapezio').catch(() => {});
-    return 'Abrindo Trapézio e Projeção';
+    call('/launch?app=trapezio').catch(() => {}); return 'Abrindo Trapézio e Projeção';
   }
   if (/\b(zoom)\b/.test(s)) {
-    call('/launch?app=zoom').catch(() => {});
-    return 'Abrindo Zoom da Tela';
+    call('/launch?app=zoom').catch(() => {}); return 'Abrindo Zoom da Tela';
   }
   if (/\b(volume|som)\b/.test(s) || /\b(aumenta|aumentar|abaixa|abaixar|diminui|diminuir)\b/.test(s)) {
     if (/(aument|sob|mais|alto)/.test(s)) { keys('volup', count(s, 3)); return 'Volume +'; }
@@ -359,10 +1307,10 @@ function interpret(raw) {
   if (/\b(voltar|volta|volte|retornar)\b/.test(s)) { key('back'); return 'Voltar'; }
   if (/\b(inicio|tela inicial|home|comeco)\b/.test(s)) { key('home'); return 'Início'; }
   if (/\b(menu|opcoes)\b/.test(s)) { key('menu'); return 'Menu'; }
-  if (/\b(cima|subir|sobe|suba)\b/.test(s)) { const n = count(s, 1); keys('up', n); return 'Cima ×' + n; }
-  if (/\b(baixo|descer|desce|desca)\b/.test(s)) { const n = count(s, 1); keys('down', n); return 'Baixo ×' + n; }
-  if (/\besquerda\b/.test(s)) { const n = count(s, 1); keys('left', n); return 'Esquerda ×' + n; }
-  if (/\bdireita\b/.test(s)) { const n = count(s, 1); keys('right', n); return 'Direita ×' + n; }
+  if (/\b(cima|subir|sobe|suba)\b/.test(s)) { handleDirPress('up'); return 'Cima'; }
+  if (/\b(baixo|descer|desce|desca)\b/.test(s)) { handleDirPress('down'); return 'Baixo'; }
+  if (/\besquerda\b/.test(s)) { handleDirPress('left'); return 'Esquerda'; }
+  if (/\bdireita\b/.test(s)) { handleDirPress('right'); return 'Direita'; }
   if ((m = s.match(/^(abrir|abre|abra|abri|coloca|colocar|coloque|bota|botar|ir para|vai para|entrar no|entrar na|entra no|entra na|assistir|quero ver)\s+(o |a |no |na )?(.+)$/))) {
     const a = findApp(m[3]);
     if (a) { launch(a); return 'Abrindo ' + a.label; }
@@ -372,7 +1320,7 @@ function interpret(raw) {
   if (direct) { launch(direct); return 'Abrindo ' + direct.label; }
 
   if (/\b(pausa|pausar|pause|play|continua|continuar|continue|tocar|toca|retomar|dar play|parar|para)\b/.test(s)) { key('play'); return 'Play/Pausa'; }
-  if (/\b(ok|confirma|confirmar|selecionar|seleciona|enter|aperta|apertar)\b/.test(s)) { key('ok'); return 'OK'; }
+  if (/\b(ok|confirma|confirmar|selecionar|seleciona|enter|aperta|apertar|clicar|clique)\b/.test(s)) { handleDirPress('ok'); return 'OK'; }
   return null;
 }
 
@@ -381,13 +1329,11 @@ function runVoice(text) {
   $('vtext').innerHTML = '';
   const strong = document.createElement('strong'); strong.textContent = '"' + text + '"';
   $('vtext').appendChild(strong);
-  $('vtext').appendChild(document.createTextNode(done || 'Não entendi. Tente "abrir YouTube" ou "volume mais".'));
+  $('vtext').appendChild(document.createTextNode(done || 'Não entendi. Tente "abrir Netflix", "dublado" ou "legenda português".'));
   if (done) vib();
 }
 
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-// O microfone do navegador só funciona em página "segura". Em http://IP
-// usamos o ditado do teclado do celular (o microfone do Gboard), que funciona sempre.
 const browserMic = !!SR && window.isSecureContext;
 let rec = null;
 
@@ -424,13 +1370,27 @@ const goVoice = () => { const v = $('vz').value.trim(); if (v) { runVoice(v); $(
 $('vgo').onclick = goVoice;
 $('vz').addEventListener('keydown', e => { if (e.key === 'Enter') goVoice(); });
 
-/* ---------- status ---------- */
+/* ---------- status e detecção automática do app na tela ---------- */
 const poll = () => fetch('/status', { cache: 'no-store' }).then(r => r.json()).then(s => {
   $('dot').classList.toggle('on', s.adb);
-  $('st').textContent = s.adb ? 'conectado' : 'aguardando permissão de depuração na tela do projetor';
+  $('st').textContent = s.adb ? 'conectado' : 'aguardando permissão ADB';
+  if (s.cx !== undefined) $('cursorCoords').textContent = s.cx + ', ' + s.cy;
+  if (s.activeApp && s.activeApp !== currentActiveApp) {
+    currentActiveApp = s.activeApp;
+    $('activeBadge').textContent = 'Na tela: ' + (APP_NAMES[currentActiveApp] || currentActiveApp);
+    // Adapta automaticamente as setas direcionais quando entra/sai da Netflix (se não travado manualmente)
+    if (!manualDirOverride) {
+      setDirMode(currentActiveApp === 'netflix' ? 'scroll' : 'dpad', true);
+    }
+    if (APP_GUIDES[currentActiveApp]) {
+      renderAppGuide(currentActiveApp);
+    }
+  }
 }).catch(() => { $('dot').classList.remove('on'); $('st').textContent = 'fora do ar'; });
-poll(); setInterval(poll, 5000);
+
+poll(); setInterval(poll, 3000);
 loadApps();
+renderAppGuide('netflix');
 </script>
 </body>
 </html>
