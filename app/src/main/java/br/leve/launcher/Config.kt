@@ -99,9 +99,10 @@ object Config {
         "com.droidlogic.tv.settings",
     )
     val focusPackages = listOf(
-        "com.htc.htcsettings/com.htc.activity.ProjectionActivity",
-        "com.htc.htcsettings",
         "com.softwinner.tcorrection/.projection.ProjectionSettingActivity",
+        "com.softwinner.tcorrection/.projection.ManuelCorrectionActivity",
+        "com.softwinner.tcorrection/.projection.AngleActivity",
+        "com.softwinner.tcorrection",
     )
     val mirrorPackages = listOf(
         "com.ionitech.airscreen",

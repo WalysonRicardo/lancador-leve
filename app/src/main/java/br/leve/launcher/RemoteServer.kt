@@ -34,6 +34,16 @@ class RemoteServer(private val ctx: Context, private val port: Int) {
         "back" to 4, "home" to 3, "menu" to 82,
         "volup" to 24, "voldown" to 25, "mute" to 164,
         "play" to 85, "power" to 26, "enter" to 66,
+        "focusup" to 307, "focusdown" to 308,
+        "zoomin" to 130, "zoomout" to 131,
+    )
+
+    private val projectorTools = mapOf(
+        "trapezio" to "com.softwinner.tcorrection/.projection.ProjectionSettingActivity",
+        "projeccao" to "com.softwinner.tcorrection/.projection.ProjectionSettingActivity",
+        "4cantos" to "com.softwinner.tcorrection/.projection.ManuelCorrectionActivity",
+        "angulo" to "com.softwinner.tcorrection/.projection.AngleActivity",
+        "zoom" to "com.softwinner.tcorrection/.projection.ZoomActivity",
     )
 
     fun start() {
@@ -99,6 +109,7 @@ class RemoteServer(private val ctx: Context, private val port: Int) {
     }
 
     private fun componentFor(id: String): String? {
+        projectorTools[id]?.let { return it }
         val pm = ctx.packageManager
         val item = HomeStore.resolve(ctx, id) { AppRepo.launchables(pm, ctx.packageName) } ?: return null
         val pkg = item.pkg ?: return null

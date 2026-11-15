@@ -113,6 +113,18 @@
     </div>
 
     <div>
+      <label>Imagem (Foco e Trapézio)</label>
+      <div class="grid3">
+        <button data-key="focusdown" data-rep>Foco −</button>
+        <button data-tool="trapezio" data-label="Projeção e Trapézio">Trapézio</button>
+        <button data-key="focusup" data-rep>Foco +</button>
+        <button data-tool="4cantos" data-label="Trapézio 4 Cantos">4 Cantos</button>
+        <button data-tool="angulo" data-label="Ajuste Rápido">Rápido</button>
+        <button data-tool="zoom" data-label="Zoom da Tela">Zoom</button>
+      </div>
+    </div>
+
+    <div>
       <label for="t">Digitar no projetor (busca, senha do Wi-Fi)</label>
       <div class="row">
         <input id="t" type="text" placeholder="Escreva aqui…" autocomplete="off" enterkeyhint="send">
@@ -176,6 +188,15 @@ document.querySelectorAll('[data-key]').forEach(b => {
     if (b.hasAttribute('data-rep')) delay = setTimeout(() => { rep = setInterval(fire, 160); }, 400);
   });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, stop));
+});
+
+document.querySelectorAll('[data-tool]').forEach(b => {
+  b.onclick = () => {
+    vib();
+    call('/launch?app=' + encodeURIComponent(b.dataset.tool))
+      .then(() => toast('Abrindo ' + (b.dataset.label || b.textContent)))
+      .catch(() => {});
+  };
 });
 
 const t = $('t');
@@ -312,6 +333,22 @@ function interpret(raw) {
     const q = afterFirstWord(raw); if (!q) return null;
     call('/text?t=' + encodeURIComponent(q)).catch(() => {});
     return 'Digitando "' + q + '"';
+  }
+  if (/\b(foco)\b/.test(s)) {
+    if (/(menos|diminu|abaix| tras|perto)/.test(s)) { keys('focusdown', count(s, 3)); return 'Foco −'; }
+    keys('focusup', count(s, 3)); return 'Foco +';
+  }
+  if (/\b(4 cantos|quatro cantos)\b/.test(s)) {
+    call('/launch?app=4cantos').catch(() => {});
+    return 'Abrindo Trapézio 4 Cantos';
+  }
+  if (/\b(trapezio|projeccao|projecao|enquadramento|ajuste de imagem|alinhar tela)\b/.test(s)) {
+    call('/launch?app=trapezio').catch(() => {});
+    return 'Abrindo Trapézio e Projeção';
+  }
+  if (/\b(zoom)\b/.test(s)) {
+    call('/launch?app=zoom').catch(() => {});
+    return 'Abrindo Zoom da Tela';
   }
   if (/\b(volume|som)\b/.test(s) || /\b(aumenta|aumentar|abaixa|abaixar|diminui|diminuir)\b/.test(s)) {
     if (/(aument|sob|mais|alto)/.test(s)) { keys('volup', count(s, 3)); return 'Volume +'; }
